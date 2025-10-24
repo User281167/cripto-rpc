@@ -1,0 +1,9 @@
+requests
+pandas
+matplotlib
+python-docx
+fpdf2
+openpyxl
+py-telegram-bot-api
+python-dotenv
+pyTelegramBotAPI
