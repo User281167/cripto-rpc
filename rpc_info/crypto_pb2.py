@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0c\x63rypto.proto\x12\x0erpc_info.proto\"\xb4\x02\n\x06\x43rypto\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06symbol\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\r\n\x05image\x18\x04 \x01(\t\x12\x15\n\rcurrent_price\x18\x05 \x01(\x01\x12\x12\n\nmarket_cap\x18\x06 \x01(\x03\x12\x17\n\x0fmarket_cap_rank\x18\x07 \x01(\x05\x12\x1f\n\x17\x66ully_diluted_valuation\x18\x08 \x01(\x03\x12\x14\n\x0ctotal_volume\x18\t \x01(\x03\x12\x10\n\x08high_24h\x18\n \x01(\x01\x12\x0f\n\x07low_24h\x18\x0b \x01(\x01\x12\x18\n\x10price_change_24h\x18\x0c \x01(\x01\x12#\n\x1bprice_change_percentage_24h\x18\r \x01(\x01\x12\x14\n\x0clast_updated\x18\x0e \x01(\t\"3\n\rCryptoRequest\x12\x10\n\x08\x63urrency\x18\x01 \x01(\t\x12\x10\n\x08quantity\x18\x02 \x01(\x05\"5\n\nCryptoList\x12\'\n\x07\x63ryptos\x18\x01 \x03(\x0b\x32\x16.rpc_info.proto.Crypto\"1\n\x11\x43ryptoByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08\x63urrency\x18\x02 \x01(\t2\xa7\x01\n\rCryptoService\x12J\n\rGetTopCryptos\x12\x1d.rpc_info.proto.CryptoRequest\x1a\x1a.rpc_info.proto.CryptoList\x12J\n\rGetCryptoById\x12!.rpc_info.proto.CryptoByIdRequest\x1a\x16.rpc_info.proto.Cryptob\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0c\x63rypto.proto\x12\x0erpc_info.proto\"\xb4\x02\n\x06\x43rypto\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06symbol\x18\x02 \x01(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\r\n\x05image\x18\x04 \x01(\t\x12\x15\n\rcurrent_price\x18\x05 \x01(\x01\x12\x12\n\nmarket_cap\x18\x06 \x01(\x03\x12\x17\n\x0fmarket_cap_rank\x18\x07 \x01(\x05\x12\x1f\n\x17\x66ully_diluted_valuation\x18\x08 \x01(\x03\x12\x14\n\x0ctotal_volume\x18\t \x01(\x03\x12\x10\n\x08high_24h\x18\n \x01(\x01\x12\x0f\n\x07low_24h\x18\x0b \x01(\x01\x12\x18\n\x10price_change_24h\x18\x0c \x01(\x01\x12#\n\x1bprice_change_percentage_24h\x18\r \x01(\x01\x12\x14\n\x0clast_updated\x18\x0e \x01(\t\"3\n\rCryptoRequest\x12\x10\n\x08\x63urrency\x18\x01 \x01(\t\x12\x10\n\x08quantity\x18\x02 \x01(\x05\"5\n\nCryptoList\x12\'\n\x07\x63ryptos\x18\x01 \x03(\x0b\x32\x16.rpc_info.proto.Crypto\"1\n\x11\x43ryptoByIdRequest\x12\n\n\x02id\x18\x01 \x01(\t\x12\x10\n\x08\x63urrency\x18\x02 \x01(\t2\xf8\x01\n\rCryptoService\x12J\n\rGetTopCryptos\x12\x1d.rpc_info.proto.CryptoRequest\x1a\x1a.rpc_info.proto.CryptoList\x12J\n\rGetCryptoById\x12!.rpc_info.proto.CryptoByIdRequest\x1a\x16.rpc_info.proto.Crypto\x12O\n\x10StreamTopCryptos\x12\x1d.rpc_info.proto.CryptoRequest\x1a\x1a.rpc_info.proto.CryptoList0\x01\x62\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -40,5 +40,5 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_CRYPTOBYIDREQUEST']._serialized_start=451
   _globals['_CRYPTOBYIDREQUEST']._serialized_end=500
   _globals['_CRYPTOSERVICE']._serialized_start=503
-  _globals['_CRYPTOSERVICE']._serialized_end=670
+  _globals['_CRYPTOSERVICE']._serialized_end=751
 # @@protoc_insertion_point(module_scope)

@@ -45,6 +45,11 @@ class CryptoServiceStub(object):
                 request_serializer=crypto__pb2.CryptoByIdRequest.SerializeToString,
                 response_deserializer=crypto__pb2.Crypto.FromString,
                 _registered_method=True)
+        self.StreamTopCryptos = channel.unary_stream(
+                '/rpc_info.proto.CryptoService/StreamTopCryptos',
+                request_serializer=crypto__pb2.CryptoRequest.SerializeToString,
+                response_deserializer=crypto__pb2.CryptoList.FromString,
+                _registered_method=True)
 
 
 class CryptoServiceServicer(object):
@@ -63,6 +68,13 @@ class CryptoServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def StreamTopCryptos(self, request, context):
+        """stream de datos, para que el cliente no haga polling
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_CryptoServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -75,6 +87,11 @@ def add_CryptoServiceServicer_to_server(servicer, server):
                     servicer.GetCryptoById,
                     request_deserializer=crypto__pb2.CryptoByIdRequest.FromString,
                     response_serializer=crypto__pb2.Crypto.SerializeToString,
+            ),
+            'StreamTopCryptos': grpc.unary_stream_rpc_method_handler(
+                    servicer.StreamTopCryptos,
+                    request_deserializer=crypto__pb2.CryptoRequest.FromString,
+                    response_serializer=crypto__pb2.CryptoList.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -132,6 +149,33 @@ class CryptoService(object):
             '/rpc_info.proto.CryptoService/GetCryptoById',
             crypto__pb2.CryptoByIdRequest.SerializeToString,
             crypto__pb2.Crypto.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True)
+
+    @staticmethod
+    def StreamTopCryptos(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(
+            request,
+            target,
+            '/rpc_info.proto.CryptoService/StreamTopCryptos',
+            crypto__pb2.CryptoRequest.SerializeToString,
+            crypto__pb2.CryptoList.FromString,
             options,
             channel_credentials,
             insecure,
