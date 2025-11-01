@@ -1,6 +1,8 @@
 import requests
 import logging
 
+from crypto_currency import CryptoCurrency
+
 log = logging.getLogger(__name__)
 
 
@@ -21,44 +23,32 @@ def get_cryptos_data(currency="usd", quantity=15):
     response.raise_for_status()
 
     log.info("Datos obtenidos exitosamente.")
-    return response.json()
+
+    cryptos = []
+
+    for crypto in response.json():
+        cryptos.append(CryptoCurrency.from_dict(crypto))
+
+    return cryptos
 
 
 def get_crypto_data(coin_id, currency="usd"):
+    log.info(f"Obteniendo datos de {coin_id} en {currency.upper()}...")
+
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies={currency}&include_24hr_change=true"
     response = requests.get(url)
     response.raise_for_status()
+
+    log.info("Datos obtenidos exitosamente.")
+
+    cryptos = []
+
+    for crypto in response.json():
+        cryptos.append(CryptoCurrency.from_dict(crypto))
+
     return response.json()
-
-
-def clean_crypto_data(data):
-    # Lista de claves que quieres eliminar
-    keys_to_remove = [
-        "market_cap_change_24h",
-        "market_cap_change_percentage_24h",
-        "circulating_supply",
-        "total_supply",
-        "max_supply",
-        "ath",
-        "ath_change_percentage",
-        "ath_date",
-        "atl",
-        "atl_change_percentage",
-        "atl_date",
-        "roi",
-    ]
-
-    # Filtrar cada diccionario en la lista
-    cleaned_data = []
-
-    for item in data:
-        cleaned_item = {k: v for k, v in item.items() if k not in keys_to_remove}
-        cleaned_data.append(cleaned_item)
-
-    return cleaned_data
 
 
 if __name__ == "__main__":
     data = get_cryptos_data()
-    data = clean_crypto_data(data)
     print(data)
