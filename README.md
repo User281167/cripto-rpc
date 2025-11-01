@@ -19,7 +19,7 @@ El sistema permite:
 ### Backend
 - **FastAPI**: servidor principal y API REST.
 - **RPC**: comunicación entre nodos para generación de reportes.
-  - Librerías recomendadas: `RPyC`, `gRPC`, o `msgpack-rpc`.
+  - Librería: `gRPC`
 - **Colas de mensajes**: para gestionar peticiones de archivos.
   - RabbitMQ (`pika`) o Kafka (`confluent-kafka`).
 - **Programación de tareas**: `cron` (Linux) o `APScheduler` (Python).
@@ -104,5 +104,3 @@ Este proyecto está abierto a mejoras. Puedes contribuir con:
 - Optimización de la arquitectura distribuida.
 
 ---
-
-¿Quieres que te ayude a generar el `requirements.txt` o el `main.py` base para FastAPI y RPC? También puedo ayudarte a escribir el endpoint `/suscribirse` o el worker que consuma la cola.

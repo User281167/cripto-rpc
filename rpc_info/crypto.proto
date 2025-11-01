@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package rpc_info.proto;
+
+// Mensaje para una criptomoneda
+message Crypto {
+  string id = 1;
+  string symbol = 2;
+  string name = 3;
+  string image = 4;
+  double current_price = 5;
+  int64 market_cap = 6;
+  int32 market_cap_rank = 7;
+  int64 fully_diluted_valuation = 8;
+  int64 total_volume = 9;
+  double high_24h = 10;
+  double low_24h = 11;
+  double price_change_24h = 12;
+  double price_change_percentage_24h = 13;
+  string last_updated = 14;
+}
+
+// Solicitud para lista de criptos
+message CryptoRequest {
+  string currency = 1;
+  int32 quantity = 2;
+}
+
+// Respuesta con lista de criptos
+message CryptoList {
+  repeated Crypto cryptos = 1;
+}
+
+// Solicitud para una cripto específica
+message CryptoByIdRequest {
+  string id = 1; // Ej: bitcoin
+  string currency = 2; // Ej: USD
+}
+
+// Servicio gRPC
+service CryptoService {
+  rpc GetTopCryptos (CryptoRequest) returns (CryptoList);
+  rpc GetCryptoById (CryptoByIdRequest) returns (Crypto);
+}
