@@ -4,7 +4,7 @@ from concurrent import futures
 import crypto_pb2
 import crypto_pb2_grpc
 
-from data_handle import get_cryptos_data, get_crypto_data, clean_crypto_data
+from data_handle import get_cryptos_data, get_crypto_data
 
 import logging
 from dotenv import load_dotenv
@@ -23,8 +23,7 @@ class CryptoService(crypto_pb2_grpc.CryptoServiceServicer):
     def GetTopCryptos(self, request, context):
         try:
             data = get_cryptos_data()
-            data = clean_crypto_data(data)
-            return crypto_pb2.CryptoList(cryptos=data)
+            return crypto_pb2.CryptoList(cryptos=[c.to_dict() for c in data])
         except Exception as e:
             log.error(f"Error al obtener datos de criptomonedas: \n{e}")
             return crypto_pb2.CryptoList(cryptos=[])
@@ -32,7 +31,7 @@ class CryptoService(crypto_pb2_grpc.CryptoServiceServicer):
     def GetCryptoById(self, request, context):
         try:
             data = get_crypto_data(request.id)
-            return crypto_pb2.Crypto(**data)
+            return crypto_pb2.Crypto(data.to_dict())
         except Exception as e:
             log.error(f"Error al obtener datos de criptomonedas: \n{e}")
             return crypto_pb2.Crypto()
