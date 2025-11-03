@@ -73,11 +73,12 @@ Los siguientes diagramas están escritos en formato Mermaid y pueden visualizars
 
 ---
 
-## Instalación y Ejecución
+## Instalación y Ejecución Local
 
 1. Clonar el repositorio:
-   git clone https://github.com/tuusuario/tu-repo.git
-   cd tu-repo
+   ```bash
+   git clone https://github.com/User281167/cripto-rpc.git
+   cd cripto-rpc
    ```
 
 2. Instalar dependencias:
@@ -90,17 +91,20 @@ Los siguientes diagramas están escritos en formato Mermaid y pueden visualizars
    uvicorn main:app --reload
    ```
 
-4. Configurar el bot de Telegram y el servicio de correo.
-
+4. Servicio Crypto info:
+   ```bash
+   python rpc_info/server.py
+   ```
 ---
 
-## Contribuciones
+# Compilación de Archivos .proto
+## Servicio Crypto
+``` bash
+python -m grpc_tools.protoc -I./proto --python_out=./generated --grpc_python_out=./generated ./proto/crypto.proto
 
-Este proyecto está abierto a mejoras. Puedes contribuir con:
+# En el archivo generado en `crypto_pb2_grpc.py` se debe cambiar la importación
+import crypto_pb2 as crypto__pb2
 
-- Nuevos indicadores financieros.
-- Mejoras en el diseño de reportes.
-- Funcionalidades avanzadas del bot.
-- Optimización de la arquitectura distribuida.
-
----
+# a
+from . import crypto_pb2 as crypto__pb2
+```

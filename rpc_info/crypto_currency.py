@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-import crypto_pb2 as crypto_pb2
+from generated import crypto_pb2
 
 
 @dataclass
