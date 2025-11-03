@@ -1,6 +1,10 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import grpc
-import crypto_pb2
-import crypto_pb2_grpc
+from generated import crypto_pb2, crypto_pb2_grpc
 
 from dotenv import load_dotenv
 import os

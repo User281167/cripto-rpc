@@ -1,17 +1,21 @@
+import os
+import sys
+import time
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import grpc
 from concurrent import futures
 
-import crypto_pb2
-import crypto_pb2_grpc
-
+from generated import crypto_pb2, crypto_pb2_grpc
 from data_handle import get_cryptos_data, get_crypto_data
 
 import logging
 from dotenv import load_dotenv
-import os
-import time
+
 
 load_dotenv()
+
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
