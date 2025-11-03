@@ -38,8 +38,12 @@ class CryptoService(crypto_pb2_grpc.CryptoServiceServicer):
             Una lista CryptoList con las principales criptomonedas en la divisa especificada.
         """
         while context.is_active:
-            data = get_cryptos_data(request.currency, request.quantity)
-            yield crypto_pb2.CryptoList(cryptos=[c.to_proto() for c in data])
+            try:
+                data = get_cryptos_data(request.currency, request.quantity)
+                yield crypto_pb2.CryptoList(cryptos=[c.to_proto() for c in data])
+            except Exception as e:
+                log.error(f"Error al obtener datos de criptomonedas: \n{e}")
+
             time.sleep(10)
 
     def GetTopCryptos(self, request, context):
