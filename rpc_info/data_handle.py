@@ -5,7 +5,7 @@ import logging
 import time
 from typing import List
 
-from crypto_currency import CryptoCurrency, CryptoHistoryItem
+from models import CryptoCurrency, CryptoHistoryItem
 from currency_exchange import get_currency_exchange
 
 log = logging.getLogger(__name__)
