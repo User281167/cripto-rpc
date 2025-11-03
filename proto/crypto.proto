@@ -41,4 +41,7 @@ message CryptoByIdRequest {
 service CryptoService {
   rpc GetTopCryptos (CryptoRequest) returns (CryptoList);
   rpc GetCryptoById (CryptoByIdRequest) returns (Crypto);
+
+  // stream de datos, para que el cliente no haga polling
+  rpc StreamTopCryptos (CryptoRequest) returns (stream CryptoList);
 }

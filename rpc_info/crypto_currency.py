@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from generated import crypto_pb2
 
 
 @dataclass
@@ -26,3 +27,21 @@ class CryptoCurrency:
 
     def to_dict(self):
         return self.__dict__
+
+    def to_proto(self):
+        return crypto_pb2.Crypto(
+            id=self.id,
+            symbol=self.symbol,
+            name=self.name,
+            image=self.image,
+            current_price=self.current_price,
+            market_cap=self.market_cap,
+            market_cap_rank=self.market_cap_rank,
+            fully_diluted_valuation=self.fully_diluted_valuation,
+            total_volume=self.total_volume,
+            high_24h=self.high_24h,
+            low_24h=self.low_24h,
+            price_change_24h=self.price_change_24h,
+            price_change_percentage_24h=self.price_change_percentage_24h,
+            last_updated=self.last_updated,
+        )
