@@ -20,10 +20,29 @@ message Crypto {
   string last_updated = 14;
 }
 
+// Un punto de precio individual en el tiempo
+message HistoricalPricePoint {
+  int64 timestamp = 1; // Unix timestamp
+  double price = 2;    // Precio en la divisa solicitada
+}
+
 // Solicitud para lista de criptos
 message CryptoRequest {
   string currency = 1;
   int32 quantity = 2;
+}
+
+// Solicitud de historial de precios
+message HistoricalRequest {
+  string id = 1;         // ID de la criptomoneda (Ej: bitcoin)
+  string currency = 2;   // Divisa deseada (Ej: USD, EUR)
+  int32 history_size = 3; // Cantidad de puntos históricos a retornar
+}
+
+// Respuesta con lista de precios históricos
+message HistoricalResponse {
+  string id = 1;
+  repeated HistoricalPricePoint prices = 2;
 }
 
 // Respuesta con lista de criptos
@@ -42,6 +61,9 @@ service CryptoService {
   rpc GetTopCryptos (CryptoRequest) returns (CryptoList);
   rpc GetCryptoById (CryptoByIdRequest) returns (Crypto);
 
-  // stream de datos, para que el cliente no haga polling
+  // RPC para obtener el historial (lectura del caché)
+  rpc GetPriceHistory (HistoricalRequest) returns (HistoricalResponse);
+
+  // Stream de datos, para que el cliente no haga polling
   rpc StreamTopCryptos (CryptoRequest) returns (stream CryptoList);
 }
