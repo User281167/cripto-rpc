@@ -49,6 +49,12 @@ class CryptoServiceStub(object):
             response_deserializer=crypto__pb2.Crypto.FromString,
             _registered_method=True,
         )
+        self.GetPriceHistory = channel.unary_unary(
+            "/rpc_info.proto.CryptoService/GetPriceHistory",
+            request_serializer=crypto__pb2.HistoricalRequest.SerializeToString,
+            response_deserializer=crypto__pb2.HistoricalResponse.FromString,
+            _registered_method=True,
+        )
         self.StreamTopCryptos = channel.unary_stream(
             "/rpc_info.proto.CryptoService/StreamTopCryptos",
             request_serializer=crypto__pb2.CryptoRequest.SerializeToString,
@@ -61,7 +67,7 @@ class CryptoServiceServicer(object):
     """Servicio gRPC"""
 
     def GetTopCryptos(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """RPC sincrónicos para obtener datos estáticos/últimos"""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details("Method not implemented!")
         raise NotImplementedError("Method not implemented!")
@@ -72,8 +78,14 @@ class CryptoServiceServicer(object):
         context.set_details("Method not implemented!")
         raise NotImplementedError("Method not implemented!")
 
+    def GetPriceHistory(self, request, context):
+        """RPC para obtener el historial (lectura del caché)"""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
+
     def StreamTopCryptos(self, request, context):
-        """stream de datos, para que el cliente no haga polling"""
+        """Stream de datos, para que el cliente no haga polling"""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details("Method not implemented!")
         raise NotImplementedError("Method not implemented!")
@@ -90,6 +102,11 @@ def add_CryptoServiceServicer_to_server(servicer, server):
             servicer.GetCryptoById,
             request_deserializer=crypto__pb2.CryptoByIdRequest.FromString,
             response_serializer=crypto__pb2.Crypto.SerializeToString,
+        ),
+        "GetPriceHistory": grpc.unary_unary_rpc_method_handler(
+            servicer.GetPriceHistory,
+            request_deserializer=crypto__pb2.HistoricalRequest.FromString,
+            response_serializer=crypto__pb2.HistoricalResponse.SerializeToString,
         ),
         "StreamTopCryptos": grpc.unary_stream_rpc_method_handler(
             servicer.StreamTopCryptos,
@@ -159,6 +176,36 @@ class CryptoService(object):
             "/rpc_info.proto.CryptoService/GetCryptoById",
             crypto__pb2.CryptoByIdRequest.SerializeToString,
             crypto__pb2.Crypto.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True,
+        )
+
+    @staticmethod
+    def GetPriceHistory(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            "/rpc_info.proto.CryptoService/GetPriceHistory",
+            crypto__pb2.HistoricalRequest.SerializeToString,
+            crypto__pb2.HistoricalResponse.FromString,
             options,
             channel_credentials,
             insecure,

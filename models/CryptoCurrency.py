@@ -1,4 +1,6 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+import time
+
 from generated import crypto_pb2
 
 
@@ -20,7 +22,7 @@ class CryptoCurrency:
     last_updated: str
 
     @classmethod
-    def from_dict(cls, data):
+    def from_json(cls, data):
         keys = cls.__annotations__.keys()
         filtered = {k: data[k] for k in keys if k in data}
         return cls(**filtered)
@@ -45,3 +47,10 @@ class CryptoCurrency:
             price_change_percentage_24h=self.price_change_percentage_24h,
             last_updated=self.last_updated,
         )
+
+    def update_price_factor(self, exchange: float) -> "CryptoCurrency":
+        self.current_price *= exchange
+        self.high_24h *= exchange
+        self.low_24h *= exchange
+        self.price_change_24h *= exchange
+        return self
