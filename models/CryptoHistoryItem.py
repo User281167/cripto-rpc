@@ -34,3 +34,10 @@ class CryptoHistoryItem:
             return None
 
         return {"timestamp": self.timestamp, "price": price * exchange}
+
+    def to_dict(self) -> dict:
+        return {"timestamp": self.timestamp, "prices": self.prices}
+
+    @classmethod
+    def from_json(cls, data: dict) -> "CryptoHistoryItem":
+        return cls(timestamp=data["timestamp"], prices=data["prices"])

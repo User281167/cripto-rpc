@@ -97,7 +97,7 @@ Los siguientes diagramas están escritos en formato Mermaid y pueden visualizars
    ```
 ---
 
-# Compilación de Archivos .proto
+# Compilación de Archivos .proto para Servicios gRPC y Ejecución local
 ## Servicio Crypto
 ``` bash
 python -m grpc_tools.protoc -I./proto --python_out=./generated --grpc_python_out=./generated ./proto/crypto.proto
@@ -107,4 +107,15 @@ import crypto_pb2 as crypto__pb2
 
 # a
 from . import crypto_pb2 as crypto__pb2
+
+#levantar instancia de redis
+docker run -d --name redis-rpc-info -p 6380:6379 redis:7
+docker start redis-rpc-info
+
+
+# Ejecutar workers en segundo plano
+python rpc_info/workers.py
+
+# Ejecutar el servicio en segundo plano
+python rpc_info/server.py
 ```

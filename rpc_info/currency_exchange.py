@@ -3,19 +3,18 @@ import asyncio
 import httpx
 import logging
 
+from cache import DataCache
+
 log = logging.getLogger(__name__)
 
 # En base a USD
-_CURRENCY_EXCHANGE = {"data": []}
 CURRENCY_EXCHANGE_API_URL = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@2025.11.1/v1/currencies/usd.json"
 
 
-async def fetch_currency_exchange():
+async def fetch_currency_exchange() -> dict | None:
     """
     Obtener el cambio de moneda
     """
-    global _CURRENCY_EXCHANGE
-
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
             log.info("Obteniendo cambio de moneda...")
@@ -24,12 +23,16 @@ async def fetch_currency_exchange():
             response.raise_for_status()
 
             data = response.json()
-            _CURRENCY_EXCHANGE["data"] = response.json()["usd"]
-            return _CURRENCY_EXCHANGE["data"]
+
+            cache = DataCache()
+            cache.save_exchange(data["usd"])
+            return data
     except httpx.HTTPStatusError as e:
         log.error(f"HTTP Error obteniendo cambio de moneda: {e}")
     except Exception as e:
         log.error(f"Error obteniendo cambio de moneda: {e}")
+
+    return None
 
 
 async def currency_exchange_worker(interval=600):
@@ -39,8 +42,6 @@ async def currency_exchange_worker(interval=600):
     Args:
         timeout (int): Tiempo de espera en segundos.
     """
-    global _CURRENCY_EXCHANGE
-
     while True:
         await fetch_currency_exchange()
         await asyncio.sleep(interval)
@@ -50,8 +51,11 @@ def get_currency_exchange(target_currency="EUR") -> float:
     """
     Obtener el cambio de moneda
     """
+    log.info(f"Obteniendo cambio de moneda para {target_currency.upper()}...")
+
     try:
-        return _CURRENCY_EXCHANGE["data"][target_currency.lower()]
+        cache = DataCache()
+        return cache.get_exchange()[target_currency.lower()]
     except Exception as e:
         log.error(f"Error obteniendo cambio de moneda: {e}")
         return 0

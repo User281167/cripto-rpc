@@ -7,27 +7,19 @@ from typing import List
 
 from models import CryptoCurrency, CryptoHistoryItem
 from currency_exchange import get_currency_exchange
+from cache import DataCache, MAX_HISTORY_SIZE
 
 log = logging.getLogger(__name__)
 
-_CRYPTO_CACHE = {
-    "data": [],
-    "history": [],
-    "last_updated": 0,
-}
 
 BASE_CURRENCY = "usd"
 BASE_QUANTITY = 50
-MAX_HISTORY_SIZE = (
-    24 * 60 * 60 // 30
-)  # 24 horas de datos, actualizados cada 30 segundos
 
 
 async def fetch_and_cache_data():
     """
     Obtiene los datos de criptomonedas de la API de CoinGecko y los guarda en un diccionario.
     """
-    global _CRYPTO_CACHE
 
     url = "https://api.coingecko.com/api/v3/coins/markets"
     params = {
@@ -47,20 +39,15 @@ async def fetch_and_cache_data():
             raw_data = response.json()
             new_data = [CryptoCurrency.from_json(d) for d in raw_data]
 
-            current_time = int(time.time())
-
             # Item de historial, precio e ID
             history_item = CryptoHistoryItem.from_raw_data(raw_data)
 
-            _CRYPTO_CACHE["data"] = new_data
+            cache = DataCache()
+            cache.save_crypto_data(new_data)
+            cache.save_crypto_history(history_item)
 
-            if len(_CRYPTO_CACHE["history"]) >= MAX_HISTORY_SIZE:
-                _CRYPTO_CACHE["history"].pop(0)
-
-            _CRYPTO_CACHE["history"].append(history_item)
-            _CRYPTO_CACHE["last_updated"] = current_time
             log.info(
-                f"Cache actualizada. History size: {len(_CRYPTO_CACHE['history'])}"
+                f"Cache actualizada con {len(new_data)} criptomonedas en {BASE_CURRENCY.upper()}"
             )
     except httpx.HTTPStatusError as e:
         log.error(f"HTTP Error obteniendo data: {e.response.status_code}")
@@ -82,7 +69,8 @@ async def crypto_data_worker(interval=60):
 
 
 def get_cryptos_data(currency="usd", quantity=15) -> List[CryptoCurrency]:
-    data = _CRYPTO_CACHE["data"][:quantity]
+    cache = DataCache()
+    data = cache.get_crypto_data()[:quantity]
 
     log.info(f"Obteniendo {quantity} criptomonedas en {currency.upper()}...")
 
@@ -101,9 +89,13 @@ def get_history_data(
     aplicando la conversión de moneda si es necesario.
     """
 
-    # Obtener los últimos N items del historial (Objetos CryptoHistoryItem)
-    history_items: list[CryptoHistoryItem] = _CRYPTO_CACHE["history"][-history_size:]
+    cache = DataCache()
+    history_size = min(history_size, MAX_HISTORY_SIZE)
 
+    # Obtener los últimos N items del historial (Objetos CryptoHistoryItem)
+    history_items: list[CryptoHistoryItem] = cache.get_crypto_history()
+
+    history_items = history_items[-history_size:]
     exchange_factor = 1.0
 
     if target_currency != BASE_CURRENCY:
@@ -134,8 +126,8 @@ def get_crypto_data(coin_id: str, currency="usd") -> CryptoCurrency:
     # data = Currency.from_json(response.json()[0])
 
     # return data.update_price_factor(currency_exchange)
-
-    data = _CRYPTO_CACHE["data"]
+    cache = DataCache()
+    data = cache.get_crypto_data()
     data = filter(lambda c: c.id == coin_id, data)
 
     if not data:
