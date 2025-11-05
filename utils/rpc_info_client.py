@@ -17,7 +17,7 @@ class RpcInfoClient:
         self.channel = grpc.insecure_channel(ProjectEnv.RPC_INFO)
         self.stub = crypto_pb2_grpc.CryptoServiceStub(self.channel)
 
-    async def get_top_cryptos(self, currency: str = "usd", quantity: int = 15):
+    async def get_top_cryptos(self, currency: str = "usd", quantity: int = 50):
         request = crypto_pb2.CryptoRequest(currency=currency, quantity=quantity)
         return self.stub.GetTopCryptos(request)
 
