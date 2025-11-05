@@ -93,7 +93,7 @@ class SocketConnection:
             except Exception as e:
                 log.error(f"Error al salir de la sala: {e}")
 
-    async def poll_crypto_rooms(self, rpc_client):
+    async def poll_crypto_rooms(self):
         """Polling de salas activas cada 5 segundos"""
         try:
             log.info("Iniciando polling de salas...")
@@ -105,18 +105,19 @@ class SocketConnection:
                         continue
 
                     try:
-                        response = await rpc_client.get_price_history(id=room)
+                        response = await self.rpc.get_price_history(id=room)
+
                         data = [
-                            CryptoHistoryItem.from_json(h).to_dict()
-                            for h in response.history
+                            CryptoHistoryItem.from_proto(response.id, h).to_dict()
+                            for h in response.prices
                         ]
 
-                        await self.sio.emit("update", {"data": data}, room=room)
-                        log.info(f"update a sala '{room}' ({len(data)} items)")
+                        await self.sio.emit("crypto_update", {"data": data}, room=room)
+                        log.info(f"crypto_update sala '{room}' ({len(data)} items)")
                     except Exception as e:
                         log.error(f"Error polling sala {room}: {e}")
 
-                await asyncio.sleep(5)
+                await asyncio.sleep(10)
         except asyncio.CancelledError:
             log.info("Polling cancelado")
             raise

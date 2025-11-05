@@ -25,7 +25,7 @@ log = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     # Startup: Iniciar tareas en background
     stream_task = asyncio.create_task(socket_conn.stream_and_broadcast())
-    poll_task = asyncio.create_task(socket_conn.poll_crypto_rooms(rpc_client))
+    poll_task = asyncio.create_task(socket_conn.poll_crypto_rooms())
 
     log.info("Tareas de Socket.IO iniciadas")
 
