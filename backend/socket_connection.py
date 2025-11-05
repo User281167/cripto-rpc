@@ -21,19 +21,47 @@ class SocketConnection:
         )
         self.rpc = rpc_client
         self.active_rooms = {}
+        self.cached_top5 = []
+        self.cached_top50 = []
 
         @self.sio.event
         async def connect(sid, environ):
             log.info(f"Connected: {sid}")
+
+            # Enviar datos cacheados inmediatamente
+            if self.cached_top5:
+                await self.sio.emit(
+                    "top5_update", {"cryptos": self.cached_top5}, to=sid
+                )
+                log.info(f"Enviado top5 cacheado a {sid}")
 
         @self.sio.event
         async def disconnect(sid):
             log.info(f"Disconnected: {sid}")
 
         @self.sio.event
+        async def subscribe_top50(sid):
+            """Cliente se suscribe al top 50 (cuando está en la ruta principal /)"""
+            await self.sio.enter_room(sid, "top50_subscribers")
+            log.info(f"{sid} suscrito a top50")
+
+            # Enviar datos cacheados inmediatamente
+            if self.cached_top50:
+                await self.sio.emit(
+                    "top50_update", {"cryptos": self.cached_top50}, to=sid
+                )
+                log.info(f"Enviado top50 cacheado a {sid}")
+
+        @self.sio.event
+        async def unsubscribe_top50(sid):
+            """Cliente se desuscribe del top 50 (cuando sale de ruta principal /)"""
+            await self.sio.leave_room(sid, "top50_subscribers")
+            log.info(f"{sid} desuscrito de top50")
+
+        @self.sio.event
         async def join_room(sid, data):
             """
-            Crear o unirse a una sala para hacer multicast de criptomonedas
+            Crear o unirse a una sala para hacer multicast de criptomonedas especifica
 
             sid: Id de la sesión
             data: Diccionario con la clave "room" que contiene el nombre de la sala
@@ -72,26 +100,23 @@ class SocketConnection:
 
             while True:
                 for room in list(self.active_rooms.keys()):
-                    if self.active_rooms[room] > 0:
-                        try:
-                            # Obtener datos históricos
-                            response = await rpc_client.get_price_history(id=room)
+                    if self.active_rooms[room] <= 0:
+                        del self.active_rooms[room]
+                        continue
 
-                            data = [
-                                CryptoHistoryItem.from_json(h).to_dict()
-                                for h in response.history
-                            ]
+                    try:
+                        response = await rpc_client.get_price_history(id=room)
+                        data = [
+                            CryptoHistoryItem.from_json(h).to_dict()
+                            for h in response.history
+                        ]
 
-                            await self.sio.emit("update", {"data": data}, room=room)
+                        await self.sio.emit("update", {"data": data}, room=room)
+                        log.info(f"update a sala '{room}' ({len(data)} items)")
+                    except Exception as e:
+                        log.error(f"Error polling sala {room}: {e}")
 
-                            log.info(
-                                f"Enviado update a sala '{room}' ({len(data)} items)"
-                            )
-                        except Exception as e:
-                            log.error(f"Error polling sala {room}: {e}")
-
-                await asyncio.sleep(10)  # polling
-
+                await asyncio.sleep(5)
         except asyncio.CancelledError:
             log.info("Polling cancelado")
             raise
@@ -100,7 +125,9 @@ class SocketConnection:
 
     async def stream_and_broadcast(self):
         """
-        Stream de las criptomonedas más importantes y emite dos eventos broadcast
+        Stream de las criptomonedas más importantes y emite dos eventos:
+        - top5_update: broadcast a TODOS
+        - top50_update: solo a suscritos en sala "top50_subscribers"
         """
         try:
             log.info("Iniciando stream de criptomonedas...")
@@ -111,14 +138,21 @@ class SocketConnection:
                     CryptoCurrency.from_proto(c).to_dict() for c in update.cryptos
                 ]
 
+                # Actualizar cache
+                self.cached_top5 = cryptos[:5]
+                self.cached_top50 = cryptos
+
                 log.info(f"Broadcasting {len(cryptos)} cryptos")
 
-                # Emitir los 50 a quienes lo necesiten
-                # Emitir los 5 primeros como resumen
-                await asyncio.gather(
-                    self.sio.emit("top50_update", {"cryptos": cryptos}),
-                    self.sio.emit("top5_update", {"cryptos": cryptos[:5]}),
+                # Top 5: Broadcast a TODOS
+                await self.sio.emit("top5_update", {"cryptos": cryptos[:5]})
+
+                # Top 50: Solo a suscritos
+                await self.sio.emit(
+                    "top50_update", {"cryptos": cryptos}, room="top50_subscribers"
                 )
+
+                log.info(f"Enviado top5 (broadcast) y top50 (sala: top50_subscribers)")
 
         except asyncio.CancelledError:
             log.info("Stream cancelado")

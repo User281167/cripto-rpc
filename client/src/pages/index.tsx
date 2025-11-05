@@ -40,7 +40,7 @@ export default function IndexPage() {
             })}
             href={siteConfig.links.docs}
           >
-            Documentation
+            Documentación
           </Link>
           <Link
             isExternal

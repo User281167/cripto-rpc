@@ -6,6 +6,7 @@ import {
   TableRow,
   TableCell,
 } from "@heroui/table";
+import { Link } from "@heroui/link";
 import { Spinner } from "@heroui/spinner";
 import { useState, useMemo } from "react";
 
@@ -99,18 +100,23 @@ export const CryptoTable = ({ data, isLoading = false }: CryptoTableProps) => {
             {(crypto) => (
               <TableRow key={crypto.id}>
                 <TableCell>{crypto.market_cap_rank}</TableCell>
-                <TableCell className="flex items-center gap-2">
-                  <img
-                    alt={crypto.name}
-                    className="w-5 h-5"
-                    src={crypto.image}
-                  />
-                  {crypto.name}
+                <TableCell>
+                  <Link
+                    className="flex items-center gap-2"
+                    href={`/${crypto.id}`}
+                  >
+                    <img
+                      alt={crypto.name}
+                      className="w-5 h-5"
+                      src={crypto.image}
+                    />
+                    {crypto.name}
+                  </Link>
                 </TableCell>
                 <TableCell>{crypto.symbol.toUpperCase()}</TableCell>
-                <TableCell>${crypto.current_price.toFixed(2)}</TableCell>
-                <TableCell>${crypto.high_24h.toFixed(2)}</TableCell>
-                <TableCell>${crypto.low_24h.toFixed(2)}</TableCell>
+                <TableCell>${crypto.current_price.toLocaleString()}</TableCell>
+                <TableCell>${crypto.high_24h.toLocaleString()}</TableCell>
+                <TableCell>${crypto.low_24h.toLocaleString()}</TableCell>
                 <TableCell
                   className={
                     crypto.price_change_24h >= 0
