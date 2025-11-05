@@ -11,7 +11,7 @@ from utils import RpcInfoClient, ProjectEnv
 from generated import report_pb2, report_pb2_grpc
 from models import CryptoCurrency
 
-from report import create_and_get_crypto_report
+from report import create_and_get_crypto_report, create_and_get_trend_report
 
 
 logging.basicConfig(
@@ -46,6 +46,32 @@ class CryptoReportService(report_pb2_grpc.CryptoReportServiceServicer):
             log.error(f"Error al generar el reporte: \n{e}")
             context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details("Error interno al generar el reporte.")
+            return report_pb2.Report()
+
+    async def GenerateTrendReport(self, request, context):
+        log.info(f"Obteniendo reporte de tendencias {request}")
+
+        data = None
+
+        try:
+            data = await RpcInfoClient().get_top_cryptos(request.currency)
+            data = [CryptoCurrency.from_proto(c) for c in data.cryptos]
+        except Exception as e:
+            log.error(f"Error al obtener datos de criptomonedas: \n{e}")
+            context.set_code(grpc.StatusCode.INTERNAL)
+            context.set_details("Error interno al obtener los datos de criptomonedas.")
+            return report_pb2.Report()
+
+        try:
+            filename, content = create_and_get_trend_report(data, request.currency)
+
+            return report_pb2.Report(
+                filename=os.path.basename(filename), content=content
+            )
+        except Exception as e:
+            log.error(f"Error al generar el reporte de tendencias: \n{e}")
+            context.set_code(grpc.StatusCode.INTERNAL)
+            context.set_details("Error interno al generar el reporte de tendencias.")
             return report_pb2.Report()
 
 
