@@ -24,3 +24,9 @@ class RpcReportClient:
     async def generate_trend_report(self, currency: str = "usd") -> report_pb2.Report:
         request = report_pb2.ReportRequest(currency=currency)
         return self.stub.GenerateTrendReport(request)
+
+    async def generate_executive_report(
+        self, currency: str = "usd"
+    ) -> report_pb2.Report:
+        request = report_pb2.ReportRequest(currency=currency)
+        return self.stub.GenerateExecutiveReport(request)
