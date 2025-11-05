@@ -133,3 +133,17 @@ from . import report_pb2 as report__pb2
 # Ejecutar el servicio en segundo plano
 python rpc_report/server.py
 ```
+
+## Servicio Email
+``` bash
+python -m grpc_tools.protoc -I./proto --python_out=./generated --grpc_python_out=./generated ./proto/email.proto
+
+# En el archivo generado en `email_pb2_grpc.py` se debe cambiar la importación
+import email_pb2 as email__pb2
+
+# a
+from . import email_pb2 as email__pb2
+
+# Ejecutar el servicio en segundo plano
+python rpc_email/server.py
+```

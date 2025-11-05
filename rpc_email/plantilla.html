@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Mercado</title>
+    <style>
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        .data-table th {
+            background-color: #eaf2f8;
+            color: #003366;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6;">
+
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center">
+                <table width="600" border="0" cellspacing="0" cellpadding="20"
+                    style="background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+
+                    <!-- Encabezado -->
+                    <tr>
+                        <td align="center" style="border-bottom: 2px solid #005a9c; padding-bottom: 20px;">
+                            <h1 style="color: #003366; margin: 0;">Reporte Ejecutivo de Criptomonedas</h1>
+                            <p style="color: #555555; margin: 5px 0 0;">{FECHA}</p>
+                        </td>
+                    </tr>
+
+                    <!-- Cuerpo del Mensaje -->
+                    <tr>
+                        <td style="padding: 30px 20px;">
+                            <h2 style="color: #003366;">Estimada Gerencia,</h2>
+                            <p style="color: #333333; line-height: 1.6;">
+                                A continuación se presenta el resumen diario sobre el rendimiento de los principales
+                                activos digitales.
+                            </p>
+
+                            <!-- Resumen de Puntos Clave -->
+                            <table width="100%" border="0" cellspacing="0" cellpadding="10"
+                                style="margin-top: 20px; background-color: #eaf2f8; border-radius: 5px;">
+                                <!-- ... (el contenido de la tabla de resumen sigue igual) ... -->
+                                <tr>
+                                    <td style="color: #333;"><strong>Tendencia General del Mercado:</strong></td>
+                                    <td style="color: {COLOR_TENDENCIA}; font-weight: bold; text-align: right;">
+                                        {VARIACION_PROMEDIO}%</td>
+                                </tr>
+                                <tr>
+                                    <td style="color: #333;"><strong>Activo con Mayor Ganancia:</strong></td>
+                                    <td style="color: #28a745; font-weight: bold; text-align: right;">{ACTIVO_GANADOR}
+                                        (+{PORCENTAJE_GANADOR}%)</td>
+                                </tr>
+                                <tr>
+                                    <td style="color: #333;"><strong>Activo con Mayor Pérdida:</strong></td>
+                                    <td style="color: #dc3545; font-weight: bold; text-align: right;">{ACTIVO_PERDEDOR}
+                                        ({PORCENTAJE_PERDEDOR}%)</td>
+                                </tr>
+                            </table>
+
+                            <h3
+                                style="color: #003366; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 30px;">
+                                Gráfico de Variación (24h)</h3>
+
+                            <!-- GRÁFICO EMBEBIDO -->
+                            <p style="text-align: center;">
+                                <img src="cid:grafico_variacion" alt="Gráfico de Variación"
+                                    style="width: 100%; max-width: 580px; height: auto;">
+                            </p>
+
+                            <h3
+                                style="color: #003366; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 30px;">
+                                Tabla de Datos Detallada</h3>
+
+                            <!-- TABLA DE DATOS EMBEBIDA -->
+                            {TABLA_DATOS_HTML}
+
+                            <p style="color: #333333; line-height: 1.6; margin-top: 25px;">
+                                Para un análisis exhaustivo y conservación de registros, los reportes completos también
+                                se encuentran adjuntos en formatos <strong>PDF, Word y Excel</strong>.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+
+</html>

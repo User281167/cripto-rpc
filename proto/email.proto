@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package rpc_email.proto;
+
+message SubscribeEmailRequest {
+    string email = 1;
+    int32 hour = 2; // UTC
+    int32 minute = 3;
+}
+
+message UnsubscribeEmailRequest {
+    string email = 1;
+}
+
+message SubscribeEmailResponse {
+    bool success = 1;
+    string message = 2;
+}
+
+service EmailService {
+    rpc SubscribeEmail(SubscribeEmailRequest) returns (SubscribeEmailResponse);
+    rpc UnsubscribeEmail(UnsubscribeEmailRequest) returns (SubscribeEmailResponse);
+}
