@@ -24,7 +24,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0creport.proto\x12\x10rpc_report.proto\"+\n\x06Report\x12\x10\n\x08\x66ilename\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\x0c\"!\n\rReportRequest\x12\x10\n\x08\x63urrency\x18\x02 \x01(\t2\x90\x02\n\x13\x43ryptoReportService\x12Q\n\x14GenerateCryptoReport\x12\x1f.rpc_report.proto.ReportRequest\x1a\x18.rpc_report.proto.Report\x12P\n\x13GenerateTrendReport\x12\x1f.rpc_report.proto.ReportRequest\x1a\x18.rpc_report.proto.Report\x12T\n\x17GenerateExecutiveReport\x12\x1f.rpc_report.proto.ReportRequest\x1a\x18.rpc_report.proto.Reportb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0creport.proto\x12\x10rpc_report.proto\"+\n\x06Report\x12\x10\n\x08\x66ilename\x18\x01 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\x0c\"!\n\rReportRequest\x12\x10\n\x08\x63urrency\x18\x02 \x01(\t2\xdf\x02\n\x13\x43ryptoReportService\x12Q\n\x14GenerateCryptoReport\x12\x1f.rpc_report.proto.ReportRequest\x1a\x18.rpc_report.proto.Report\x12P\n\x13GenerateTrendReport\x12\x1f.rpc_report.proto.ReportRequest\x1a\x18.rpc_report.proto.Report\x12T\n\x17GenerateExecutiveReport\x12\x1f.rpc_report.proto.ReportRequest\x1a\x18.rpc_report.proto.Report\x12M\n\x10GenerateBarGraph\x12\x1f.rpc_report.proto.ReportRequest\x1a\x18.rpc_report.proto.Reportb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -36,5 +36,5 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_REPORTREQUEST']._serialized_start=79
   _globals['_REPORTREQUEST']._serialized_end=112
   _globals['_CRYPTOREPORTSERVICE']._serialized_start=115
-  _globals['_CRYPTOREPORTSERVICE']._serialized_end=387
+  _globals['_CRYPTOREPORTSERVICE']._serialized_end=466
 # @@protoc_insertion_point(module_scope)

@@ -1,7 +1,6 @@
 import os
 import hashlib
 import logging
-import tempfile
 import pandas as pd
 from datetime import datetime
 
@@ -123,18 +122,39 @@ def create_and_get_executive_report(
     else:
         log.info(f"Generando nuevo reporte: {filepath}")
 
-    df = crypto_data_to_df(data)
+        df = crypto_data_to_df(data)
+        graph_path, _ = create_and_get_bar_graph(data, currency, interval_minutes)
+        generate_executive_report(df, graph_path=graph_path, filename=filepath)
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as temp_file:
-        temp_path = temp_file.name
+    with open(filepath, "rb") as f:
+        content = f.read()
 
-    save_bar_graph_as_image(df, temp_path)
-    generate_executive_report(df, graph_path=temp_path, filename=filepath)
+    return filepath, content
 
-    # Eliminar el archivo temporal después de usarlo
-    if os.path.exists(temp_path):
-        os.remove(temp_path)
 
+def create_and_get_bar_graph(
+    data: list[CryptoCurrency], currency="usd", interval_minutes=60
+):
+    """
+    Genera o reutiliza un reporte ejecutivo generado en PDF
+
+    Returns:
+        filename (str): Nombre del archivo generado o reutilizado.
+        content (bytes): Contenido binario del archivo.
+    """
+    now = datetime.utcnow()
+    report_hash = generate_report_hash(currency, now, interval_minutes, "png")
+    filepath = get_cached_report_path(report_hash, suffix=".png")
+
+    if os.path.exists(filepath):
+        log.info(f"Usando reporte en caché: {filepath}")
+    else:
+        log.info(f"Generando nuevo reporte: {filepath}")
+
+        df = crypto_data_to_df(data)
+        save_bar_graph_as_image(df, filepath)
+
+    print(f"Reporte generado exitosamente en '{filepath}'")
     with open(filepath, "rb") as f:
         content = f.read()
 

@@ -15,6 +15,7 @@ from report import (
     create_and_get_crypto_report,
     create_and_get_trend_report,
     create_and_get_executive_report,
+    create_and_get_bar_graph,
 )
 
 
@@ -26,18 +27,27 @@ log = logging.getLogger(__name__)
 
 
 class CryptoReportService(report_pb2_grpc.CryptoReportServiceServicer):
-    async def GenerateCryptoReport(self, request, context):
-        log.info(f"Obteniendo reporte de criptomonedas {request}")
+    async def _get_data(self, request, context, quantity: int = 50):
+        log.info(f"Obteniendo datos de criptomonedas {request}")
 
         data = None
 
         try:
-            data = await RpcInfoClient().get_top_cryptos(request.currency)
+            data = await RpcInfoClient().get_top_cryptos(request.currency, quantity)
             data = [CryptoCurrency.from_proto(c) for c in data.cryptos]
         except Exception as e:
             log.error(f"Error al obtener datos de criptomonedas: \n{e}")
             context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details("Error interno al obtener los datos de criptomonedas.")
+            return report_pb2.Report()
+
+        return data
+
+    async def GenerateCryptoReport(self, request, context):
+        log.info(f"Obteniendo reporte de criptomonedas {request}")
+        data = await self._get_data(request, context)
+
+        if not data:
             return report_pb2.Report()
 
         try:
@@ -54,16 +64,9 @@ class CryptoReportService(report_pb2_grpc.CryptoReportServiceServicer):
 
     async def GenerateTrendReport(self, request, context):
         log.info(f"Obteniendo reporte de tendencias {request}")
+        data = await self._get_data(request, context)
 
-        data = None
-
-        try:
-            data = await RpcInfoClient().get_top_cryptos(request.currency)
-            data = [CryptoCurrency.from_proto(c) for c in data.cryptos]
-        except Exception as e:
-            log.error(f"Error al obtener datos de criptomonedas: \n{e}")
-            context.set_code(grpc.StatusCode.INTERNAL)
-            context.set_details("Error interno al obtener los datos de criptomonedas.")
+        if not data:
             return report_pb2.Report()
 
         try:
@@ -80,16 +83,9 @@ class CryptoReportService(report_pb2_grpc.CryptoReportServiceServicer):
 
     async def GenerateExecutiveReport(self, request, context):
         log.info(f"Obteniendo reporte ejecutivo {request}")
+        data = await self._get_data(request, context, quantity=15)
 
-        data = None
-
-        try:
-            data = await RpcInfoClient().get_top_cryptos(request.currency, 15)
-            data = [CryptoCurrency.from_proto(c) for c in data.cryptos]
-        except Exception as e:
-            log.error(f"Error al obtener datos de criptomonedas: \n{e}")
-            context.set_code(grpc.StatusCode.INTERNAL)
-            context.set_details("Error interno al obtener los datos de criptomonedas.")
+        if not data:
             return report_pb2.Report()
 
         try:
@@ -102,6 +98,25 @@ class CryptoReportService(report_pb2_grpc.CryptoReportServiceServicer):
             log.error(f"Error al generar el reporte ejecutivo: \n{e}")
             context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details("Error interno al generar el reporte ejecutivo.")
+            return report_pb2.Report()
+
+    async def GenerateBarGraph(self, request, context):
+        log.info(f"Obteniendo gráfico de barras {request}")
+        data = await self._get_data(request, context, quantity=15)
+
+        if not data:
+            return report_pb2.Report()
+
+        try:
+            filename, content = create_and_get_bar_graph(data, request.currency)
+
+            return report_pb2.Report(
+                filename=os.path.basename(filename), content=content
+            )
+        except Exception as e:
+            log.error(f"Error al generar el gráfico de barras: \n{e}")
+            context.set_code(grpc.StatusCode.INTERNAL)
+            context.set_details("Error interno al generar el gráfico de barras.")
             return report_pb2.Report()
 
 

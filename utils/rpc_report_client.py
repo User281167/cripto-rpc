@@ -30,3 +30,7 @@ class RpcReportClient:
     ) -> report_pb2.Report:
         request = report_pb2.ReportRequest(currency=currency)
         return self.stub.GenerateExecutiveReport(request)
+
+    async def generate_bar_graph(self, currency: str = "usd") -> report_pb2.Report:
+        request = report_pb2.ReportRequest(currency=currency)
+        return self.stub.GenerateBarGraph(request)

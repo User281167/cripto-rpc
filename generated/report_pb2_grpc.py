@@ -55,6 +55,12 @@ class CryptoReportServiceStub(object):
             response_deserializer=report__pb2.Report.FromString,
             _registered_method=True,
         )
+        self.GenerateBarGraph = channel.unary_unary(
+            "/rpc_report.proto.CryptoReportService/GenerateBarGraph",
+            request_serializer=report__pb2.ReportRequest.SerializeToString,
+            response_deserializer=report__pb2.Report.FromString,
+            _registered_method=True,
+        )
 
 
 class CryptoReportServiceServicer(object):
@@ -78,6 +84,12 @@ class CryptoReportServiceServicer(object):
         context.set_details("Method not implemented!")
         raise NotImplementedError("Method not implemented!")
 
+    def GenerateBarGraph(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details("Method not implemented!")
+        raise NotImplementedError("Method not implemented!")
+
 
 def add_CryptoReportServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -93,6 +105,11 @@ def add_CryptoReportServiceServicer_to_server(servicer, server):
         ),
         "GenerateExecutiveReport": grpc.unary_unary_rpc_method_handler(
             servicer.GenerateExecutiveReport,
+            request_deserializer=report__pb2.ReportRequest.FromString,
+            response_serializer=report__pb2.Report.SerializeToString,
+        ),
+        "GenerateBarGraph": grpc.unary_unary_rpc_method_handler(
+            servicer.GenerateBarGraph,
             request_deserializer=report__pb2.ReportRequest.FromString,
             response_serializer=report__pb2.Report.SerializeToString,
         ),
@@ -187,6 +204,36 @@ class CryptoReportService(object):
             request,
             target,
             "/rpc_report.proto.CryptoReportService/GenerateExecutiveReport",
+            report__pb2.ReportRequest.SerializeToString,
+            report__pb2.Report.FromString,
+            options,
+            channel_credentials,
+            insecure,
+            call_credentials,
+            compression,
+            wait_for_ready,
+            timeout,
+            metadata,
+            _registered_method=True,
+        )
+
+    @staticmethod
+    def GenerateBarGraph(
+        request,
+        target,
+        options=(),
+        channel_credentials=None,
+        call_credentials=None,
+        insecure=False,
+        compression=None,
+        wait_for_ready=None,
+        timeout=None,
+        metadata=None,
+    ):
+        return grpc.experimental.unary_unary(
+            request,
+            target,
+            "/rpc_report.proto.CryptoReportService/GenerateBarGraph",
             report__pb2.ReportRequest.SerializeToString,
             report__pb2.Report.FromString,
             options,
