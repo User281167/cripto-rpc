@@ -16,3 +16,9 @@ class ProjectEnv:
     RPC_EMAIL_STMP_PORT = os.getenv("RPC_EMAIL_STMP_PORT", 587)
     RPC_EMAIL_USER = os.getenv("RPC_EMAIL_USER", "user")
     RPC_EMAIL_PASSWORD = os.getenv("RPC_EMAIL_PASSWORD", "password")
+
+    SOCKET_SERVER_URL = os.getenv("SOCKET_SERVER_URL", "http://127.0.0.1:50054")
+    BACKEND_HOST = os.getenv("BACKEND_HOST", "127.0.0.1")
+    BACKEND_PORT = os.getenv("BACKEND_PORT", 8000)
+
+    FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")

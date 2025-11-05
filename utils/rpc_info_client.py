@@ -1,20 +1,23 @@
 import sys
 import os
 import grpc
+import grpc.aio
 import asyncio
-from dotenv import load_dotenv
+from collections import defaultdict
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from generated import crypto_pb2, crypto_pb2_grpc
 from utils import ProjectEnv
 
-load_dotenv()
-
 
 class RpcInfoClient:
-    def __init__(self):
-        self.channel = grpc.insecure_channel(ProjectEnv.RPC_INFO)
+    def __init__(self, async_mode=False):
+        if async_mode:
+            self.channel = grpc.aio.insecure_channel(ProjectEnv.RPC_INFO)
+        else:
+            self.channel = grpc.insecure_channel(ProjectEnv.RPC_INFO)
+
         self.stub = crypto_pb2_grpc.CryptoServiceStub(self.channel)
 
     async def get_top_cryptos(self, currency: str = "usd", quantity: int = 50):

@@ -1,0 +1,6 @@
+fastapi==0.121.0
+fastapi[standar]
+uvicorn==0.38.0
+grpcio==1.76.0
+python-dotenv==1.2.1
+python-socketio==5.14.3
