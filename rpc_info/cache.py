@@ -105,8 +105,10 @@ class DataCache:
         self.redis.set(CacheItem.CRYPTO_LAST_UPDATED.value, int(time.time()))
 
     @with_lock(CacheItem.CRYPTO_HISTORY.value)
-    def save_crypto_history(self, snapshot: CryptoHistoryItem):
-        self.redis.lpush(CacheItem.CRYPTO_HISTORY.value, json.dumps(snapshot.to_dict()))
+    def save_crypto_history(self, snapshot: list[CryptoHistoryItem]):
+        serialized = json.dumps([item.__dict__ for item in snapshot])
+
+        self.redis.lpush(CacheItem.CRYPTO_HISTORY.value, serialized)
         self.redis.ltrim(CacheItem.CRYPTO_HISTORY.value, 0, MAX_HISTORY_SIZE - 1)
 
     @with_lock(CacheItem.CURRENCY_EXCHANGE.value)
@@ -119,7 +121,13 @@ class DataCache:
 
     def get_crypto_history(self) -> list[CryptoHistoryItem]:
         raw = self.redis.lrange(CacheItem.CRYPTO_HISTORY.value, 0, -1)
-        return [CryptoHistoryItem.from_json(json.loads(d)) for d in raw]
+
+        history: list[CryptoHistoryItem] = []
+        for snapshot_json in raw:
+            snapshot_list = json.loads(snapshot_json)  # esto es una lista de dicts
+            history.extend(CryptoHistoryItem(**item) for item in snapshot_list)
+
+        return history
 
     def get_exchange(self) -> dict:
         raw = self.redis.get(CacheItem.CURRENCY_EXCHANGE.value)

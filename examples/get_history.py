@@ -16,4 +16,7 @@ stub = crypto_pb2_grpc.CryptoServiceStub(channel)
 request = crypto_pb2.HistoricalRequest(id="bitcoin", currency="cop", history_size=5)
 response = stub.GetPriceHistory(request)
 
-print(response)
+from models import CryptoHistoryItem
+
+for item in response.prices:
+    print(CryptoHistoryItem.from_proto(response.id, item))

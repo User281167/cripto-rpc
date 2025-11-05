@@ -40,7 +40,14 @@ async def fetch_and_cache_data():
             new_data = [CryptoCurrency.from_json(d) for d in raw_data]
 
             # Item de historial, precio e ID
-            history_item = CryptoHistoryItem.from_raw_data(raw_data)
+            history_item = [
+                CryptoHistoryItem(
+                    id=c.id,
+                    timestamp=int(time.time()),
+                    price=c.current_price,
+                )
+                for c in new_data
+            ]
 
             cache = DataCache()
             cache.save_crypto_data(new_data)
@@ -83,7 +90,7 @@ def get_cryptos_data(currency="usd", quantity=15) -> List[CryptoCurrency]:
 
 def get_history_data(
     crypto_id: str, history_size: int, target_currency: str
-) -> list[dict]:
+) -> list[CryptoHistoryItem]:
     """
     Obtiene los últimos N puntos de precio para una cripto,
     aplicando la conversión de moneda si es necesario.
@@ -94,23 +101,14 @@ def get_history_data(
 
     # Obtener los últimos N items del historial (Objetos CryptoHistoryItem)
     history_items: list[CryptoHistoryItem] = cache.get_crypto_history()
-
+    history_items = list(filter(lambda item: item.id == crypto_id, history_items))
     history_items = history_items[-history_size:]
-    exchange_factor = 1.0
 
     if target_currency != BASE_CURRENCY:
         exchange_factor = get_currency_exchange(target_currency)
+        history_items = [item.factor_price(exchange_factor) for item in history_items]
 
-    final_history_points = []
-
-    # Filtrar y aplicar el factor de conversión.
-    for item in history_items:
-        point = item.to_historical_point(crypto_id, exchange=exchange_factor)
-
-        if point:
-            final_history_points.append(point)
-
-    return final_history_points
+    return history_items
 
 
 def get_crypto_data(coin_id: str, currency="usd") -> CryptoCurrency:

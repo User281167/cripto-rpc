@@ -54,7 +54,7 @@ class CryptoService(crypto_pb2_grpc.CryptoServiceServicer):
         try:
             log.info(f"Obteniendo historial de precios {request}")
 
-            raw_history = get_history_data(
+            history = get_history_data(
                 crypto_id=request.id,
                 history_size=request.history_size,
                 target_currency=request.currency,
@@ -62,10 +62,8 @@ class CryptoService(crypto_pb2_grpc.CryptoServiceServicer):
 
             # Convertir los puntos de dict a Proto
             proto_prices = [
-                crypto_pb2.HistoricalPricePoint(
-                    timestamp=point["timestamp"], price=point["price"]
-                )
-                for point in raw_history
+                crypto_pb2.HistoricalPricePoint(timestamp=p.timestamp, price=p.price)
+                for p in history
             ]
 
             return crypto_pb2.HistoricalResponse(id=request.id, prices=proto_prices)
