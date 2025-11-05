@@ -27,13 +27,13 @@ log = logging.getLogger(__name__)
 
 
 class CryptoReportService(report_pb2_grpc.CryptoReportServiceServicer):
-    async def _get_data(self, request, context, quantity: int = 50):
+    def _get_data(self, request, context, quantity: int = 50):
         log.info(f"Obteniendo datos de criptomonedas {request}")
 
         data = None
 
         try:
-            data = await RpcInfoClient().get_top_cryptos(request.currency, quantity)
+            data = RpcInfoClient().get_top_cryptos(request.currency, quantity)
             data = [CryptoCurrency.from_proto(c) for c in data.cryptos]
         except Exception as e:
             log.error(f"Error al obtener datos de criptomonedas: \n{e}")
@@ -45,7 +45,7 @@ class CryptoReportService(report_pb2_grpc.CryptoReportServiceServicer):
 
     async def GenerateCryptoReport(self, request, context):
         log.info(f"Obteniendo reporte de criptomonedas {request}")
-        data = await self._get_data(request, context)
+        data = self._get_data(request, context)
 
         if not data:
             return report_pb2.Report()
@@ -64,7 +64,7 @@ class CryptoReportService(report_pb2_grpc.CryptoReportServiceServicer):
 
     async def GenerateTrendReport(self, request, context):
         log.info(f"Obteniendo reporte de tendencias {request}")
-        data = await self._get_data(request, context)
+        data = self._get_data(request, context)
 
         if not data:
             return report_pb2.Report()
@@ -83,7 +83,7 @@ class CryptoReportService(report_pb2_grpc.CryptoReportServiceServicer):
 
     async def GenerateExecutiveReport(self, request, context):
         log.info(f"Obteniendo reporte ejecutivo {request}")
-        data = await self._get_data(request, context, quantity=15)
+        data = self._get_data(request, context, quantity=15)
 
         if not data:
             return report_pb2.Report()
@@ -102,7 +102,7 @@ class CryptoReportService(report_pb2_grpc.CryptoReportServiceServicer):
 
     async def GenerateBarGraph(self, request, context):
         log.info(f"Obteniendo gráfico de barras {request}")
-        data = await self._get_data(request, context, quantity=15)
+        data = self._get_data(request, context, quantity=15)
 
         if not data:
             return report_pb2.Report()

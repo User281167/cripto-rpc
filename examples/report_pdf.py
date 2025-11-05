@@ -7,14 +7,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils import RpcReportClient
 
 
-async def main():
+def main():
     rpc = RpcReportClient()
-    task = asyncio.create_task(rpc.generate_executive_report())
 
     print("Esperando resultados...")
-    await asyncio.gather(task)
-
-    res = task.result()
+    res = rpc.generate_executive_report()
     filename = res.filename
     content = res.content
 
@@ -32,4 +29,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

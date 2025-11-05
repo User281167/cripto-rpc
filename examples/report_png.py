@@ -9,12 +9,9 @@ from utils import RpcReportClient
 
 async def main():
     rpc = RpcReportClient()
-    task = asyncio.create_task(rpc.generate_bar_graph())
 
     print("Esperando resultados...")
-    await asyncio.gather(task)
-
-    res = task.result()
+    res = rpc.generate_bar_graph()
     filename = res.filename
     content = res.content
 

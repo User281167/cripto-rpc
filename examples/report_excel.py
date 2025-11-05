@@ -7,14 +7,12 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils import RpcReportClient
 
 
-async def main():
+if __name__ == "__main__":
     rpc = RpcReportClient()
-    excel_task = asyncio.create_task(rpc.generate_crypto_report())
 
     print("Esperando resultados...")
-    await asyncio.gather(excel_task)
+    res = rpc.generate_crypto_report()
 
-    res = excel_task.result()
     filename = res.filename
     content = res.content
 
@@ -29,7 +27,3 @@ async def main():
         f.write(content)
 
     print(f"Reporte guardado en: {filepath}")
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
