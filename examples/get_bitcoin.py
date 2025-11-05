@@ -1,17 +1,16 @@
 import sys
 import os
+import grpc
+from dotenv import load_dotenv
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import grpc
 from generated import crypto_pb2, crypto_pb2_grpc
-
-from dotenv import load_dotenv
-import os
+from utils import ProjectEnv
 
 load_dotenv()
 
-channel = grpc.insecure_channel(os.getenv("rpc-info", "127.0.0.1:50051"))
+channel = grpc.insecure_channel(ProjectEnv.RPC_INFO)
 stub = crypto_pb2_grpc.CryptoServiceStub(channel)
 
 request = crypto_pb2.CryptoByIdRequest(id="bitcoin", currency="usd")

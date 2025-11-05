@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package rpc_report.proto;
+
+message Report {
+    string filename = 1;
+    bytes content = 2;
+}
+
+message ReportRequest {
+    string currency = 2; // usd, eur, etc
+}
+
+service CryptoReportService {
+    rpc GenerateCryptoReport (ReportRequest) returns (Report);
+    rpc GenerateTrendReport (ReportRequest) returns (Report);
+    rpc GenerateExecutiveReport (ReportRequest) returns (Report);
+}

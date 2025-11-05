@@ -27,6 +27,25 @@ class CryptoCurrency:
         filtered = {k: data[k] for k in keys if k in data}
         return cls(**filtered)
 
+    @classmethod
+    def from_proto(cls, proto):
+        return cls(
+            id=proto.id,
+            symbol=proto.symbol,
+            name=proto.name,
+            image=proto.image,
+            current_price=proto.current_price,
+            market_cap=proto.market_cap,
+            market_cap_rank=proto.market_cap_rank,
+            fully_diluted_valuation=proto.fully_diluted_valuation,
+            total_volume=proto.total_volume,
+            high_24h=proto.high_24h,
+            low_24h=proto.low_24h,
+            price_change_24h=proto.price_change_24h,
+            price_change_percentage_24h=proto.price_change_percentage_24h,
+            last_updated=proto.last_updated,
+        )
+
     def to_dict(self):
         return self.__dict__
 

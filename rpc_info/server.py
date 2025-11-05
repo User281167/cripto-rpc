@@ -1,28 +1,21 @@
 import os
 import sys
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-
 import time
 import grpc
+import logging
 import asyncio
 from concurrent import futures
 
-from generated import crypto_pb2, crypto_pb2_grpc
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from currency_exchange import currency_exchange_worker
+from utils import ProjectEnv
+from generated import crypto_pb2, crypto_pb2_grpc
+from cache import DataCache
 from data_handle import (
     get_cryptos_data,
     get_crypto_data,
-    crypto_data_worker,
     get_history_data,
 )
-
-import logging
-from dotenv import load_dotenv
-
-
-load_dotenv()
 
 
 logging.basicConfig(
@@ -59,6 +52,8 @@ class CryptoService(crypto_pb2_grpc.CryptoServiceServicer):
 
     async def GetPriceHistory(self, request, context):
         try:
+            log.info(f"Obteniendo historial de precios {request}")
+
             raw_history = get_history_data(
                 crypto_id=request.id,
                 history_size=request.history_size,
@@ -79,6 +74,8 @@ class CryptoService(crypto_pb2_grpc.CryptoServiceServicer):
             return crypto_pb2.HistoricalResponse()
 
     async def GetTopCryptos(self, request, context):
+        log.info(f"Obteniendo criptomonedas {request}")
+
         try:
             data = get_cryptos_data(request.currency, request.quantity)
             return crypto_pb2.CryptoList(cryptos=[c.to_proto() for c in data])
@@ -87,6 +84,8 @@ class CryptoService(crypto_pb2_grpc.CryptoServiceServicer):
             return crypto_pb2.CryptoList(cryptos=[])
 
     async def GetCryptoById(self, request, context):
+        log.info(f"Obteniendo criptomonedas {request}")
+
         try:
             data = get_crypto_data(request.id, request.currency)
             return data.to_proto()
@@ -98,29 +97,26 @@ class CryptoService(crypto_pb2_grpc.CryptoServiceServicer):
 async def serve():
     log.info("Iniciando el servidor...")
 
-    # Comenzar tarea en segundo plano para actualizar los datos de criptomonedas
-    worker_task = asyncio.create_task(crypto_data_worker(interval=30))
-    currency_worker_task = asyncio.create_task(currency_exchange_worker(interval=60))
+    cache = DataCache(
+        host=ProjectEnv.RPC_INFO_REDIS_HOST, port=ProjectEnv.RPC_INFO_REDIS_PORT
+    )
 
     # Comenzar servidor gRPC
     server = grpc.aio.server()
     # server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     crypto_pb2_grpc.add_CryptoServiceServicer_to_server(CryptoService(), server)
 
-    RPC_ADDRESS = os.getenv("rpc-info", "127.0.0.1:50051")
-    server.add_insecure_port(RPC_ADDRESS)
+    server.add_insecure_port(ProjectEnv.RPC_INFO)
     await server.start()
 
-    log.info("Servidor iniciado y worker iniciado.")
+    log.info("Servidor iniciado.")
 
     try:
         await server.wait_for_termination()
     finally:
         log.info("Ctrl+C detectado. Cerrando servidor...")
-        worker_task.cancel()
-        currency_worker_task.cancel()
+        cache.close()
         await server.stop(grace=None)
-        log.info("Worker de caché finalizado y servidor detenido.")
         print("\n--- PROCESO FINALIZADO ---")
 
 
