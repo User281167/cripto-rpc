@@ -9,12 +9,16 @@ interface SocketContextType {
   socket: Socket | null;
   top5: any[];
   top50: any[];
+  joinCryptoRoom: (cryptoId: string) => void;
+  leaveCryptoRoom: (cryptoId: string) => void;
 }
 
 const SocketContext = createContext<SocketContextType>({
   socket: null,
   top5: [],
   top50: [],
+  joinCryptoRoom: () => {},
+  leaveCryptoRoom: () => {},
 });
 
 export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -71,8 +75,23 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [location.pathname, socket]);
 
+  // Funciones helper para salas de criptos
+  const joinCryptoRoom = (cryptoId: string) => {
+    if (socket) {
+      socket.emit("join_room", { room: cryptoId });
+    }
+  };
+
+  const leaveCryptoRoom = (cryptoId: string) => {
+    if (socket) {
+      socket.emit("leave_room", { room: cryptoId });
+    }
+  };
+
   return (
-    <SocketContext.Provider value={{ socket, top5, top50 }}>
+    <SocketContext.Provider
+      value={{ socket, top5, top50, joinCryptoRoom, leaveCryptoRoom }}
+    >
       {children}
     </SocketContext.Provider>
   );

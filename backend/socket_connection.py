@@ -105,7 +105,9 @@ class SocketConnection:
                         continue
 
                     try:
-                        response = await self.rpc.get_price_history(id=room)
+                        response = await self.rpc.get_price_history(
+                            id=room, history_size=50
+                        )
 
                         data = [
                             CryptoHistoryItem.from_proto(response.id, h).to_dict()
@@ -132,7 +134,7 @@ class SocketConnection:
         """
         try:
             log.info("Iniciando stream de criptomonedas...")
-            stream = await self.rpc.stream_top_cryptos(quantity=50)
+            stream = self.rpc.stream_top_cryptos(quantity=50)
 
             async for update in stream:
                 cryptos = [

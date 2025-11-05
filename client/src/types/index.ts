@@ -22,6 +22,7 @@ export type CryptoData = {
 };
 
 export type CryptoHistoryItem = {
+  id: string;
   timestamp: number; // Momento del snapshot (Unix timestamp)
-  prices: Record<string, number>; // {ID_cripto: precio, ...}
+  price: number;
 };
