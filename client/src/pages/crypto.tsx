@@ -9,6 +9,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import { Spinner } from "@heroui/spinner";
 
 import DefaultLayout from "@/layouts/default";
 import { useSocket } from "@/context/SocketContext";
@@ -59,21 +60,33 @@ export default function CryptoPage() {
     setChartData(cleanedData);
   }, [cryptoData]);
 
+  const graph = (
+    <ResponsiveContainer height={400} width="100%">
+      <LineChart data={chartData}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="timestamp" />
+        <YAxis />
+        <Tooltip />
+        <Line dataKey="price" stroke="#8884d8" type="monotone" />
+      </LineChart>
+    </ResponsiveContainer>
+  );
+
   return (
     <DefaultLayout>
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
         <div className="w-full">
           <h2 className={subtitle()}>Historial de precios: {id}</h2>
 
-          <ResponsiveContainer height={400} width="100%">
-            <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="timestamp" />
-              <YAxis />
-              <Tooltip />
-              <Line dataKey="price" stroke="#8884d8" type="monotone" />
-            </LineChart>
-          </ResponsiveContainer>
+          <p>{chartData && chartData.length > 0 && chartData.length} </p>
+
+          {!chartData || chartData.length === 0 ? (
+            <div className="flex justify-center items-center h-96">
+              <Spinner label="Cargando datos de la gráfica..." />
+            </div>
+          ) : (
+            graph
+          )}
         </div>
       </section>
     </DefaultLayout>
