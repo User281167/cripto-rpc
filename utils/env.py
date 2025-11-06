@@ -21,4 +21,8 @@ class ProjectEnv:
     BACKEND_HOST = os.getenv("BACKEND_HOST", "127.0.0.1")
     BACKEND_PORT = os.getenv("BACKEND_PORT", 8000)
 
-    FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+    FRONTEND_URL = os.getenv("FRONTEND_URL", None)
+
+    SOCKET_BACKEND_HOST = os.getenv("SOCKET_BACKEND_HOST", "127.0.0.1")
+    SOCKET_BACKEND_PORT = os.getenv("SOCKET_BACKEND_PORT", 8001)
+    SOCKET_REDIS_URL = os.getenv("SOCKET_REDIS_URL", "redis://localhost:6381")

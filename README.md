@@ -147,3 +147,13 @@ from . import email_pb2 as email__pb2
 # Ejecutar el servicio en segundo plano
 python rpc_email/server.py
 ```
+
+## Servicio de socket
+
+Se encarga de conectar y hacer stream de datos para el frontend
+``` bash
+python socket_service/main.py
+
+# Crear y levantar contenedor Redis para sockets
+docker run -d --name redis-socket-io -p 6381:6379 redis:7
+```
