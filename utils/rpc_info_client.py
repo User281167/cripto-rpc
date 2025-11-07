@@ -13,6 +13,12 @@ from utils import ProjectEnv
 
 class RpcInfoClient:
     def __init__(self, async_mode=False):
+        """
+        Args:
+            async_mode (bool): Comunicación asíncrona o sincrona.
+                Defaults to False.
+                TRUE: Asíncrono se debe usar async en cada función ya que se devuelve una coroutine.
+        """
         if async_mode:
             self.channel = grpc.aio.insecure_channel(ProjectEnv.RPC_INFO)
         else:

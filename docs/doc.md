@@ -31,7 +31,7 @@ flowchart TD
 - **RPC - Correo**: Servicio que prepara informes y los envía por email.
 - **Cola de informes**: Sistema de tareas en background para generar reportes.
 - **Servicio Informes**: Encargado de procesar solicitudes de informes.
-- **Servicio Info**: Encargado de obtener datos externos (como CoinGecko) y almacenarlos en caché.
+- **Servicio Info**: Encargado de obtener datos externos (usando la API de CoinGecko) y almacenarlos en caché.
 
 > Este bloque representa la lógica de negocio distribuida, donde cada servicio tiene una responsabilidad clara y se comunica por RPC.
 
@@ -51,10 +51,6 @@ flowchart TD
 - **Suscriptores**: Base de datos o lista de destinatarios.
 
 > Este bloque automatiza la distribución de reportes a usuarios suscritos.
-
----
-
-¡Vamos allá! Tu clase `SocketConnection` implementa un sistema de difusión de datos en tiempo real usando Socket.IO, con soporte para Redis en producción. Vamos a representarlo con un diagrama de difusión y acompañarlo con una explicación clara.
 
 ---
 

@@ -60,11 +60,15 @@ El sistema permite:
 
 3. Ejecutar de servicios
 
+   ```bash
+   docker run -d --name redis-rpc-info -p 6380:6379 redis:7
    python rpc_info/server.py
    python rpc_info/workers.py
+
    python rpc_report/server.p
    python rpc_email/server.py
    python socket_service/main.py
+   ```
 ---
 
 # Compilación de Archivos .proto para Servicios gRPC y Ejecución local
