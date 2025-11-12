@@ -41,7 +41,7 @@ class EmailService(email_pb2_grpc.EmailServiceServicer):
             return email_pb2.SubscribeEmailResponse(
                 success=False, message="El correo electronico no es valido."
             )
-        elif not hour or not minute:
+        elif hour is None or minute is None:
             return email_pb2.SubscribeEmailResponse(
                 success=False, message="No se ha proporcionado una hora."
             )

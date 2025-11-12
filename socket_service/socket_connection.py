@@ -96,12 +96,21 @@ class SocketConnection:
                     f"{sid} se unió a la sala {room} (total: {self.active_rooms[room]})"
                 )
 
-                # Enviar datos cacheados si existen
-                if room in self.cached_top50:
-                    await self.sio.emit(
-                        "crypto_update", {"data": [self.cached_top50[room]]}, to=sid
+                # Obtener historial real inmediatamente al unirse
+                try:
+                    response = await self.rpc.get_price_history(
+                        id=room, history_size=50
                     )
-                    log.info(f"Enviado cache de {room} a {sid}")
+                    data = [
+                        CryptoHistoryItem.from_proto(response.id, h).to_dict()
+                        for h in response.prices
+                    ]
+                    await self.sio.emit("crypto_update", {"data": data}, to=sid)
+                    log.info(f"Enviado historial de {room} a {sid} ({len(data)} items)")
+                except Exception as e:
+                    log.error(f"Error obteniendo historial para {room}: {e}")
+                    # Si falla, enviar array vacío para que el cliente sepa que está conectado
+                    await self.sio.emit("crypto_update", {"data": []}, to=sid)
 
             except Exception as e:
                 log.error(f"❌ Error al unirse a la sala: {e}")

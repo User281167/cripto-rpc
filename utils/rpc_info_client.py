@@ -8,7 +8,7 @@ from collections import defaultdict
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from generated import crypto_pb2, crypto_pb2_grpc
-from utils import ProjectEnv
+from .env import ProjectEnv
 
 
 class RpcInfoClient:

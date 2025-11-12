@@ -106,7 +106,8 @@ class DataCache:
 
     @with_lock(CacheItem.CRYPTO_HISTORY.value)
     def save_crypto_history(self, snapshot: list[CryptoHistoryItem]):
-        serialized = json.dumps([item.__dict__ for item in snapshot])
+        # Usar to_dict() en lugar de __dict__ para asegurar formato correcto
+        serialized = json.dumps([item.to_dict() for item in snapshot])
 
         self.redis.lpush(CacheItem.CRYPTO_HISTORY.value, serialized)
         self.redis.ltrim(CacheItem.CRYPTO_HISTORY.value, 0, MAX_HISTORY_SIZE - 1)
@@ -124,8 +125,31 @@ class DataCache:
 
         history: list[CryptoHistoryItem] = []
         for snapshot_json in raw:
-            snapshot_list = json.loads(snapshot_json)  # esto es una lista de dicts
-            history.extend(CryptoHistoryItem(**item) for item in snapshot_list)
+            try:
+                snapshot_list = json.loads(snapshot_json)  # esto es una lista de dicts
+                # Asegurarse de que cada item es un diccionario antes de desempaquetar
+                for item in snapshot_list:
+                    if isinstance(item, dict):
+                        try:
+                            history.append(CryptoHistoryItem(**item))
+                        except TypeError as e:
+                            log.error(f"Error creando CryptoHistoryItem desde dict: {e}, item: {item}")
+                    elif isinstance(item, str):
+                        # Si es un string, intentar parsearlo como JSON
+                        try:
+                            item_dict = json.loads(item)
+                            if isinstance(item_dict, dict):
+                                history.append(CryptoHistoryItem(**item_dict))
+                            else:
+                                log.warning(f"Item parseado no es un dict: {type(item_dict)}")
+                        except Exception as e:
+                            log.warning(f"Error parseando item del historial: {e}, item: {item}")
+                    else:
+                        log.warning(f"Item del historial tiene tipo inesperado: {type(item)}, valor: {item}")
+            except json.JSONDecodeError as e:
+                log.error(f"Error parseando JSON del historial: {e}, raw: {snapshot_json[:100]}")
+            except Exception as e:
+                log.error(f"Error procesando snapshot del historial: {e}")
 
         return history
 

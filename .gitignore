@@ -217,3 +217,36 @@ __marimo__/
 
 .temp
 .reports
+.reports/
+
+# Logs
+logs/
+*.log
+
+# Node modules
+node_modules/
+package-lock.json
+
+# Build artifacts
+*.tsbuildinfo
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Nginx
+nginx.pid

@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from generated import report_pb2, report_pb2_grpc
-from utils import ProjectEnv
+from .env import ProjectEnv
 
 load_dotenv()
 
