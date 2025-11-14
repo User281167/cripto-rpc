@@ -1,6 +1,6 @@
-import { Kbd } from "@heroui/kbd";
+import { Kbd } from "@heroui/react";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
-import { Link } from "@heroui/link";
+import { Link } from "@heroui/react";
 
 import { SearchIcon } from "@/components/icons";
 import { useSocket } from "@/context/SocketContext";

@@ -5,9 +5,9 @@ import {
   TableColumn,
   TableRow,
   TableCell,
-} from "@heroui/table";
-import { Link } from "@heroui/link";
-import { Spinner } from "@heroui/spinner";
+} from "@heroui/react";
+import { Link } from "@heroui/react";
+import { Spinner } from "@heroui/react";
 import { useState, useMemo } from "react";
 
 import { CryptoData } from "@/types";
@@ -46,7 +46,7 @@ export const CryptoTable = ({ data, isLoading = false }: CryptoTableProps) => {
   }, [data, sort]);
 
   return (
-    <div className="w-full overflow-x-auto mt-6 min-h-[400px]">
+    <div className="w-full overflow-x-auto min-h-[400px]">
       {isLoading || isEmpty ? (
         <div className="flex justify-center items-center h-full py-10">
           <Spinner label="Cargando criptomonedas..." />

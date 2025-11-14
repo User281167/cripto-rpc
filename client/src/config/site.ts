@@ -1,8 +1,9 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Vite + HeroUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "Cryto-RPC",
+  description:
+    "Sistema distribuido para consultar y recibir reportes financieros en tiempo real.",
   navItems: [
     {
       label: "Home",

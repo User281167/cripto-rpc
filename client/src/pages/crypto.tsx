@@ -9,7 +9,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-import { Spinner } from "@heroui/spinner";
+import { Spinner } from "@heroui/react";
 
 import DefaultLayout from "@/layouts/default";
 import { useSocket } from "@/context/SocketContext";
