@@ -57,38 +57,42 @@ export const CryptoReports = () => {
   };
 
   return (
-    <section className="pb-10 md:pb-16 w-full flex flex-col gap-4 md:flex-row align-center justify-center">
-      <Button
-        className="bg-green-500 text-white"
-        endContent={<IconFileTypeXls />}
-        onPress={() => downloadCryptoFile(getCryptoReport)}
-      >
-        Criptomonedas
-      </Button>
+    <section className="pb-10 md:pb-16 w-full flex flex-col gap-4 align-center justify-center">
+      <h3 className="text-xl text-center">Descargar reportes</h3>
 
-      <Button
-        className="bg-blue-500 text-white"
-        endContent={<IconFileTypeDocx />}
-        onPress={() => downloadCryptoFile(getTrendReport)}
-      >
-        Tendencias
-      </Button>
+      <div className="w-full flex flex-col gap-4 md:flex-row align-center justify-center">
+        <Button
+          className="bg-green-500 text-white"
+          endContent={<IconFileTypeXls />}
+          onPress={() => downloadCryptoFile(getCryptoReport)}
+        >
+          Criptomonedas
+        </Button>
 
-      <Button
-        className="bg-red-500 text-white"
-        endContent={<IconFileTypePdf />}
-        onPress={() => downloadCryptoFile(getExecutiveReport)}
-      >
-        Ejecutivo
-      </Button>
+        <Button
+          className="bg-blue-500 text-white"
+          endContent={<IconFileTypeDocx />}
+          onPress={() => downloadCryptoFile(getTrendReport)}
+        >
+          Tendencias
+        </Button>
 
-      <Button
-        className="bg-gray-200 dark:bg-gray-800 dark:text-gray-200"
-        endContent={<IconFileTypePng />}
-        onPress={() => downloadCryptoFile(getGraphReport)}
-      >
-        Variación
-      </Button>
+        <Button
+          className="bg-red-500 text-white"
+          endContent={<IconFileTypePdf />}
+          onPress={() => downloadCryptoFile(getExecutiveReport)}
+        >
+          Ejecutivo
+        </Button>
+
+        <Button
+          className="bg-gray-200 dark:bg-gray-800 dark:text-gray-200"
+          endContent={<IconFileTypePng />}
+          onPress={() => downloadCryptoFile(getGraphReport)}
+        >
+          Variación
+        </Button>
+      </div>
     </section>
   );
 };
