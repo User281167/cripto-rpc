@@ -16,6 +16,8 @@ import { CryptoSearch } from "./crypto-search";
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
+import { EmailSuscribe } from "./email-suscribe";
+import { EmailUnsuscribe } from "./email-unsuscribe";
 
 export const Navbar = () => {
   return (
@@ -60,6 +62,15 @@ export const Navbar = () => {
           </Link>
           <ThemeSwitch />
         </NavbarItem>
+
+        <NavbarItem className="hidden sm:flex">
+          <EmailSuscribe />
+        </NavbarItem>
+
+        <NavbarItem className="hidden sm:flex">
+          <EmailUnsuscribe />
+        </NavbarItem>
+
         <NavbarItem className="hidden lg:flex">
           <CryptoSearch />
         </NavbarItem>

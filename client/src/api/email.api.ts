@@ -23,3 +23,13 @@ export const suscribeEmail = async (dto: SuscribeEmail): Promise<boolean> => {
 
   return response.ok;
 };
+
+export const unsuscribeEmail = async (email: string): Promise<boolean> => {
+  const response = await fetch(`${PROJECT_ENV.API_URL}/subscriptions`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  return response.ok;
+};

@@ -12,17 +12,16 @@ import {
   TimeInputValue,
   addToast,
 } from "@heroui/react";
-import { IconMail } from "@tabler/icons-react";
+import { IconMail, IconMailCancel } from "@tabler/icons-react";
 import { useState } from "react";
 
 import { SuscribeEmail } from "@/types/models";
-import { suscribeEmail } from "@/api/email.api";
+import { suscribeEmail, unsuscribeEmail } from "@/api/email.api";
 
-export const EmailSuscribe = () => {
+export const EmailUnsuscribe = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const [submitted, setSubmitted] = useState<SuscribeEmail | null>(null);
-  const [time, setTime] = useState<TimeInputValue>();
+  const [submitted, setSubmitted] = useState<string>(null);
   const [errors, setErrors] = useState({});
 
   const onSubmit = (e) => {
@@ -38,33 +37,27 @@ export const EmailSuscribe = () => {
       return;
     }
 
-    const formattedData: SuscribeEmail = {
-      email: data.email as string,
-      hour: time?.hour || 0,
-      minute: time?.minute || 0,
-    };
-
     // Clear errors and submit
     setErrors({});
-    setSubmitted(formattedData);
+    setSubmitted(data.email as string);
 
     addToast({
-      title: "Enviando suscripción",
-      description: "Estamos enviando tu suscripción, por favor espera.",
+      title: "Removiendo suscripción",
+      description: "Estamos removiendo tu suscripción, por favor espera.",
       color: "primary",
-      promise: suscribeEmail(formattedData)
+      promise: unsuscribeEmail(data.email as string)
         .then((res) => {
           if (res) {
             addToast({
-              title: "Suscripción enviada",
-              description: "Tu suscripción se ha enviado exitosamente.",
+              title: "Suscripción removida",
+              description: "Tu suscripción ha sido removida exitosamente.",
               color: "success",
             });
           } else {
             addToast({
               title: "Error al enviar la suscripción",
               description:
-                "Tu suscripción no pudo ser enviada. Inténtalo de nuevo o más tarde.",
+                "No pudimos remover tu suscripción. Inténtalo de nuevo o más tarde.",
               color: "danger",
             });
           }
@@ -73,7 +66,7 @@ export const EmailSuscribe = () => {
           addToast({
             title: "Error al enviar la suscripción",
             description:
-              "Tu suscripción no pudo ser enviada. Inténtalo de nuevo o más tarde.",
+              "No pudimos remover tu suscripción. Inténtalo de nuevo o más tarde.",
             color: "danger",
           });
         }),
@@ -82,9 +75,11 @@ export const EmailSuscribe = () => {
 
   return (
     <>
-      <Button endContent={<IconMail />} variant="bordered" onPress={onOpen}>
-        <span className="hidden lg:block">Suscribete</span>
-      </Button>
+      <Button
+        endContent={<IconMailCancel />}
+        variant="bordered"
+        onPress={onOpen}
+      ></Button>
 
       <Modal
         isDismissable={false}
@@ -96,8 +91,8 @@ export const EmailSuscribe = () => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Suscribete a nuestro boletin para recibir actualizaciones a la
-                hora que desees
+                <IconMail />
+                <h3 className="font-bold text-lg">Cancelar suscripción</h3>
               </ModalHeader>
 
               <ModalBody>
@@ -125,12 +120,6 @@ export const EmailSuscribe = () => {
                       type="email"
                     />
 
-                    <TimeInput
-                      isRequired
-                      onChange={setTime}
-                      label="Hora de envío"
-                    />
-
                     <div className="flex gap-4">
                       <Button
                         className="w-full"
@@ -138,7 +127,7 @@ export const EmailSuscribe = () => {
                         type="submit"
                         onPress={onClose}
                       >
-                        Suscribir
+                        Enviar
                       </Button>
 
                       <Button type="reset" variant="bordered">

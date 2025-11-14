@@ -61,33 +61,33 @@ export const CryptoReports = () => {
       <Button
         className="bg-green-500 text-white"
         endContent={<IconFileTypeXls />}
-        onClick={() => downloadCryptoFile(getCryptoReport)}
+        onPress={() => downloadCryptoFile(getCryptoReport)}
       >
-        Reporte de criptomonedas
+        Criptomonedas
       </Button>
 
       <Button
         className="bg-blue-500 text-white"
         endContent={<IconFileTypeDocx />}
-        onClick={() => downloadCryptoFile(getTrendReport)}
+        onPress={() => downloadCryptoFile(getTrendReport)}
       >
-        Reporte de tendencias
+        Tendencias
       </Button>
 
       <Button
         className="bg-red-500 text-white"
         endContent={<IconFileTypePdf />}
-        onClick={() => downloadCryptoFile(getExecutiveReport)}
+        onPress={() => downloadCryptoFile(getExecutiveReport)}
       >
-        Reporte de tendencias
+        Ejecutivo
       </Button>
 
       <Button
         className="bg-gray-200 dark:bg-gray-800 dark:text-gray-200"
         endContent={<IconFileTypePng />}
-        onClick={() => downloadCryptoFile(getGraphReport)}
+        onPress={() => downloadCryptoFile(getGraphReport)}
       >
-        Reporte de variación
+        Variación
       </Button>
     </section>
   );
