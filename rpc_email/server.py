@@ -70,7 +70,9 @@ class EmailService(email_pb2_grpc.EmailServiceServicer):
         email = request.email
 
         if email in self.emails:
-            self.emails.remove(email)
+            self.emails = [
+                e for e in self.emails if e["email"].lower() != email.lower()
+            ]
             log.info(f"Correo electrónico eliminado: {email}")
 
         return email_pb2.SubscribeEmailResponse(
