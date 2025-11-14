@@ -5,6 +5,6 @@ export type ReportApi = {
 
 export type SuscribeEmail = {
   email: string;
-  hours: number;
-  minutes: number;
+  hour: number;
+  minute: number;
 };

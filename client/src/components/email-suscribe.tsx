@@ -6,14 +6,55 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
+  Form,
+  Input,
+  TimeInput,
+  TimeInputValue,
 } from "@heroui/react";
+import { IconMail } from "@tabler/icons-react";
+import { useState } from "react";
+
+import { SuscribeEmail } from "@/types/models";
+import { suscribeEmail } from "@/api/email.api";
 
 export const EmailSuscribe = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
+  const [submitted, setSubmitted] = useState<SuscribeEmail | null>(null);
+  const [time, setTime] = useState<TimeInputValue>();
+  const [errors, setErrors] = useState({});
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.currentTarget));
+
+    // Custom validation checks
+    const newErrors = {};
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+
+      return;
+    }
+
+    const formattedData: SuscribeEmail = {
+      email: data.email as string,
+      hour: time?.hour || 0,
+      minute: time?.minute || 0,
+    };
+
+    // Clear errors and submit
+    setErrors({});
+    setSubmitted(formattedData);
+    suscribeEmail(formattedData);
+  };
+
   return (
     <>
-      <Button onPress={onOpen}>Open Modal</Button>
+      <Button endContent={<IconMail />} onPress={onOpen}>
+        Suscribete
+      </Button>
+
       <Modal
         isDismissable={false}
         isKeyboardDismissDisabled={true}
@@ -24,27 +65,57 @@ export const EmailSuscribe = () => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                Modal Title
+                Suscribete a nuestro boletin para recibir actualizaciones a la
+                hora que desees
               </ModalHeader>
+
               <ModalBody>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat
-                  consequat elit dolor adipisicing. Mollit dolor eiusmod sunt ex
-                  incididunt cillum quis. Velit duis sit officia eiusmod Lorem
-                  aliqua enim laboris do dolor eiusmod. Et mollit incididunt
-                  nisi consectetur esse laborum eiusmod pariatur proident Lorem
-                  eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
+                <Form
+                  className="w-full justify-center items-center space-y-4"
+                  validationErrors={errors}
+                  onReset={() => setSubmitted(null)}
+                  onSubmit={onSubmit}
+                >
+                  <div className="flex flex-col gap-4 max-w-md">
+                    <Input
+                      isRequired
+                      errorMessage={({ validationDetails }) => {
+                        if (validationDetails.valueMissing) {
+                          return "Por favor ingresa tu email";
+                        }
+                        if (validationDetails.typeMismatch) {
+                          return "Por favor ingresa un email valido";
+                        }
+                      }}
+                      label="Email"
+                      labelPlacement="outside"
+                      name="email"
+                      placeholder="Email"
+                      type="email"
+                    />
+
+                    <TimeInput
+                      isRequired
+                      onChange={setTime}
+                      label="Hora de envío"
+                    />
+
+                    <div className="flex gap-4">
+                      <Button
+                        className="w-full"
+                        color="primary"
+                        type="submit"
+                        onPress={onClose}
+                      >
+                        Suscribir
+                      </Button>
+
+                      <Button type="reset" variant="bordered">
+                        Limpiar
+                      </Button>
+                    </div>
+                  </div>
+                </Form>
               </ModalBody>
 
               <ModalFooter>

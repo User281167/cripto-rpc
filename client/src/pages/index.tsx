@@ -8,6 +8,7 @@ import DefaultLayout from "@/layouts/default";
 import { useSocket } from "@/context/SocketContext";
 import { CryptoTable } from "@/components/crypto-table";
 import { CryptoReports } from "@/components/crypto-reports";
+import { EmailSuscribe } from "@/components/email-suscribe";
 
 export default function IndexPage() {
   const { top50 } = useSocket();
@@ -55,6 +56,7 @@ export default function IndexPage() {
       </section>
 
       <CryptoReports />
+      <EmailSuscribe />
 
       <section className="pb-10 md:pb-16">
         <CryptoTable data={top50} isLoading={!top50.length} />
