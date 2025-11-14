@@ -52,11 +52,12 @@ export default function CryptoPage() {
   useEffect(() => {
     if (!cryptoData) return;
 
-    const cleanedData = cryptoData.map((item) => ({
-      timestamp: new Date(item.timestamp * 1000).toLocaleString(),
-      price: item.price,
-    })).reverse();
-
+    const cleanedData = cryptoData
+      .map((item) => ({
+        timestamp: new Date(item.timestamp * 1000).toLocaleString(),
+        price: item.price,
+      }))
+      .reverse();
 
     setChartData(cleanedData);
   }, [cryptoData]);
