@@ -12,12 +12,12 @@ import { link as linkStyles } from "@heroui/react";
 import clsx from "clsx";
 
 import { CryptoSearch } from "./crypto-search";
+import { EmailSuscribe } from "./email-suscribe";
+import { EmailUnsuscribe } from "./email-unsuscribe";
 
 import { siteConfig } from "@/config/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
-import { EmailSuscribe } from "./email-suscribe";
-import { EmailUnsuscribe } from "./email-unsuscribe";
 
 export const Navbar = () => {
   return (

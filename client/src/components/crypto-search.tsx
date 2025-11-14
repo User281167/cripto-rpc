@@ -1,12 +1,13 @@
 import { Kbd } from "@heroui/react";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
-import { Link } from "@heroui/react";
+import { useNavigate } from "react-router-dom";
 
 import { SearchIcon } from "@/components/icons";
 import { useSocket } from "@/context/SocketContext";
 
 export const CryptoSearch = () => {
   const { top50 } = useSocket();
+  const navigate = useNavigate();
 
   return (
     <Autocomplete
@@ -21,13 +22,14 @@ export const CryptoSearch = () => {
         <SearchIcon className="text-base text-default-400 pointer-events-none flex-shrink-0" />
       }
       type="search"
+      onSelectionChange={(key) => {
+        const selected = top50.find((c) => c.id === key);
+
+        if (selected) navigate(`/${selected.id}`);
+      }}
     >
       {top50.map((crypto) => (
-        <AutocompleteItem key={crypto.name}>
-          <Link className="w-full text-normal" href={`/${crypto.id}`}>
-            {crypto.name}
-          </Link>
-        </AutocompleteItem>
+        <AutocompleteItem key={crypto.id}>{crypto.name}</AutocompleteItem>
       ))}
     </Autocomplete>
   );
