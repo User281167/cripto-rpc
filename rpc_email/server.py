@@ -108,8 +108,8 @@ class EmailService(email_pb2_grpc.EmailServiceServicer):
         users = [email["email"] for email in emails_to_send]
         log.info(f"Enviando correo electrónico {users}")
 
-        report = RpcReportClient()
-        info_task = RpcInfoClient().get_top_cryptos()
+        report = RpcReportClient(async_mode=True)
+        info_task = RpcInfoClient(async_mode=True).get_top_cryptos()
         png_task = report.generate_bar_graph()
         excel_task = report.generate_crypto_report()
         word_task = report.generate_trend_report()
