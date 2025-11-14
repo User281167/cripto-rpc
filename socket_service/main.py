@@ -76,9 +76,16 @@ app.mount("/", socket_app)
 if __name__ == "__main__":
     import uvicorn
 
+    host = ProjectEnv.SOCKET_BACKEND_HOST
     port = int(ProjectEnv.SOCKET_BACKEND_PORT)
 
-    log.info(f"Servidor escuchando en {ProjectEnv.BACKEND_HOST}:{port}")
+    if "--port" in sys.argv:
+        port = sys.argv[sys.argv.index("--port") + 1]
+    if "--host" in sys.argv:
+        host = sys.argv[sys.argv.index("--host") + 1]
+
+
+    log.info(f"Servidor escuchando en {host}:{port}")
 
     if REDIS_URL:
         log.info(f"Modo PRODUCCIÓN con Redis: {REDIS_URL}")
@@ -87,7 +94,7 @@ if __name__ == "__main__":
 
     uvicorn.run(
         "main:app",
-        host=ProjectEnv.BACKEND_HOST,
+        host=host,
         port=port,
         reload=not REDIS_URL,  # Auto-reload solo en dev
     )

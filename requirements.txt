@@ -13,3 +13,4 @@ fastapi==0.121.0
 uvicorn==0.38.0
 python-socketio==5.14.3
 aioredis==2.0.1
+pydantic[email]==2.10.6

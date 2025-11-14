@@ -2,7 +2,7 @@ import httpx
 import asyncio
 import requests
 import logging
-import time
+from datetime import datetime, timezone
 from typing import List
 
 from models import CryptoCurrency, CryptoHistoryItem
@@ -39,11 +39,19 @@ async def fetch_and_cache_data():
             raw_data = response.json()
             new_data = [CryptoCurrency.from_json(d) for d in raw_data]
 
+            # Get current UTC time as a timezone-aware datetime
+            # Convert to integer timestamp
+            utc_now = datetime.now(timezone.utc)
+            timestamp_int = int(utc_now.timestamp())
+
+            print(f"UTC Now: {utc_now}")
+            print(f"Timestamp: {timestamp_int}")
+
             # Item de historial, precio e ID
             history_item = [
                 CryptoHistoryItem(
                     id=c.id,
-                    timestamp=int(time.time()),
+                    timestamp=timestamp_int,
                     price=c.current_price,
                 )
                 for c in new_data
