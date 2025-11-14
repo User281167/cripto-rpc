@@ -4,6 +4,7 @@ import { io, Socket } from "socket.io-client";
 import { useLocation } from "react-router-dom";
 
 import { CryptoData } from "@/types";
+import { PROJECT_ENV } from "@/utils/env";
 
 interface SocketContextType {
   socket: Socket | null;
@@ -31,7 +32,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
   const location = useLocation();
 
   useEffect(() => {
-    const newSocket = io(import.meta.env.VITE_SOCKET_URL, {
+    const newSocket = io(PROJECT_ENV.SOCKET_URL, {
       transports: ["websocket", "polling"],
     });
 

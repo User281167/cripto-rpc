@@ -53,9 +53,10 @@ export default function CryptoPage() {
     if (!cryptoData) return;
 
     const cleanedData = cryptoData.map((item) => ({
-      timestamp: new Date(item.timestamp * 1000).toLocaleTimeString(),
+      timestamp: new Date(item.timestamp * 1000).toLocaleString(),
       price: item.price,
-    }));
+    })).reverse();
+
 
     setChartData(cleanedData);
   }, [cryptoData]);
