@@ -34,8 +34,8 @@ message CryptoRequest {
 
 // Solicitud de historial de precios
 message HistoricalRequest {
-  string id = 1;         // ID de la criptomoneda (Ej: bitcoin)
-  string currency = 2;   // Divisa deseada (Ej: USD, EUR)
+  string id = 1;          // ID de la criptomoneda (Ej: bitcoin)
+  string currency = 2;    // Divisa deseada (Ej: USD, EUR)
   int32 history_size = 3; // Cantidad de puntos históricos a retornar
 }
 
@@ -46,24 +46,35 @@ message HistoricalResponse {
 }
 
 // Respuesta con lista de criptos
-message CryptoList {
-  repeated Crypto cryptos = 1;
-}
+message CryptoList { repeated Crypto cryptos = 1; }
 
 // Solicitud para una cripto específica
 message CryptoByIdRequest {
-  string id = 1; // Ej: bitcoin
+  string id = 1;       // Ej: bitcoin
   string currency = 2; // Ej: USD
 }
 
+// Cambio de divisas
+message ExchangeRate {
+  string currency = 1;
+  double rate = 2;
+}
+
+message ExchangeRates { repeated ExchangeRate rates = 1; }
+
+message Empty {}
+
 // Servicio gRPC
 service CryptoService {
-  rpc GetTopCryptos (CryptoRequest) returns (CryptoList);
-  rpc GetCryptoById (CryptoByIdRequest) returns (Crypto);
+  rpc GetTopCryptos(CryptoRequest) returns (CryptoList);
+  rpc GetCryptoById(CryptoByIdRequest) returns (Crypto);
 
   // RPC para obtener el historial (lectura del caché)
-  rpc GetPriceHistory (HistoricalRequest) returns (HistoricalResponse);
+  rpc GetPriceHistory(HistoricalRequest) returns (HistoricalResponse);
 
   // Stream de datos, para que el cliente no haga polling
-  rpc StreamTopCryptos (CryptoRequest) returns (stream CryptoList);
+  rpc StreamTopCryptos(CryptoRequest) returns (stream CryptoList);
+
+  // Cambio de divisas
+  rpc GetExchangeRates(Empty) returns (ExchangeRates);
 }

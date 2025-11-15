@@ -4,6 +4,7 @@ import httpx
 import logging
 
 from cache import DataCache
+from models import ExchangeRate
 
 log = logging.getLogger(__name__)
 
@@ -59,3 +60,14 @@ def get_currency_exchange(target_currency="EUR") -> float:
     except Exception as e:
         log.error(f"Error obteniendo cambio de moneda: {e}")
         return 0
+
+
+def get_exchanges() -> list[ExchangeRate]:
+    cache = DataCache()
+    data = cache.get_exchange()
+
+    if not data:
+        return []
+
+    data = [ExchangeRate.from_dict(d) for d in data.items()]
+    return data

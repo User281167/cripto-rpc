@@ -11,6 +11,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from utils import ProjectEnv
 from generated import crypto_pb2, crypto_pb2_grpc
 from cache import DataCache
+from currency_exchange import get_exchanges
 from data_handle import (
     get_cryptos_data,
     get_crypto_data,
@@ -90,6 +91,16 @@ class CryptoService(crypto_pb2_grpc.CryptoServiceServicer):
         except Exception as e:
             log.error(f"Error al obtener datos de criptomonedas: \n{e}")
             return crypto_pb2.Crypto()
+
+    async def GetExchangeRates(self, request, context):
+        log.info(f"Obteniendo cambio de divisas {request}")
+
+        try:
+            data = [r.to_proto() for r in get_exchanges()]
+            return crypto_pb2.ExchangeRates(rates=data)
+        except Exception as e:
+            log.error(f"Error al obtener datos de criptomonedas: \n{e}")
+            return crypto_pb2.ExchangeRates()
 
 
 async def serve():

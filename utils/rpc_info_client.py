@@ -8,7 +8,7 @@ from collections import defaultdict
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from generated import crypto_pb2, crypto_pb2_grpc
-from .env import ProjectEnv
+from utils import ProjectEnv
 
 
 class RpcInfoClient:
@@ -43,3 +43,11 @@ class RpcInfoClient:
     def stream_top_cryptos(self, currency: str = "usd", quantity: int = 5):
         request = crypto_pb2.CryptoRequest(currency=currency, quantity=quantity)
         return self.stub.StreamTopCryptos(request)
+
+    def get_exchanges(self):
+        return self.stub.GetExchangeRates(crypto_pb2.Empty())
+
+
+if __name__ == "__main__":
+    client = RpcInfoClient()
+    print(client.get_exchanges())
