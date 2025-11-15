@@ -82,9 +82,7 @@ export const EmailSuscribe = () => {
 
   return (
     <>
-      <Button endContent={<IconMail />} variant="bordered" onPress={onOpen}>
-        <span className="hidden lg:block">Suscribete</span>
-      </Button>
+      <IconMail className="cursor-pointer hover:bg-gray-100" onClick={onOpen} />
 
       <Modal
         isDismissable={false}

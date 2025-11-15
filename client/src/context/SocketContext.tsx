@@ -5,6 +5,8 @@ import { useLocation } from "react-router-dom";
 
 import { CryptoData } from "@/types";
 import { PROJECT_ENV } from "@/utils/env";
+import { useExchange } from "./ExchangeContext";
+import { formatCryptoData } from "@/utils/formatPrice";
 
 interface SocketContextType {
   socket: Socket | null;
@@ -31,6 +33,18 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const location = useLocation();
 
+  const { currentExchange } = useExchange();
+  const [rate, setRate] = useState(1);
+
+  useEffect(() => {
+    if (currentExchange) {
+      setRate(currentExchange.rate);
+
+      setTop5(formatCryptoData(top5, currentExchange.rate));
+      setTop50(formatCryptoData(top50, currentExchange.rate));
+    }
+  }, [currentExchange]);
+
   useEffect(() => {
     const newSocket = io(PROJECT_ENV.SOCKET_URL, {
       transports: ["websocket", "polling"],
@@ -46,7 +60,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
         ? data
         : data.cryptos || [];
 
-      setTop5(processedData);
+      setTop5(formatCryptoData(processedData, rate));
     });
 
     // Solo recibe cuando está en la página principal
@@ -55,7 +69,7 @@ export const SocketProvider: React.FC<{ children: React.ReactNode }> = ({
         ? data
         : data.cryptos || [];
 
-      setTop50(processedData);
+      setTop50(formatCryptoData(processedData, rate));
     });
 
     setSocket(newSocket);

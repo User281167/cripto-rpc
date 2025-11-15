@@ -7,14 +7,17 @@ import { Provider } from "./provider.tsx";
 import "@/styles/globals.css";
 
 import { SocketProvider } from "@/context/SocketContext.tsx";
+import { ExchangeProvider } from "@/context/ExchangeContext.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       <Provider>
-        <SocketProvider>
-          <App />
-        </SocketProvider>
+        <ExchangeProvider>
+          <SocketProvider>
+            <App />
+          </SocketProvider>
+        </ExchangeProvider>
       </Provider>
     </BrowserRouter>
   </React.StrictMode>

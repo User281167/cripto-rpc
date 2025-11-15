@@ -75,11 +75,10 @@ export const EmailUnsuscribe = () => {
 
   return (
     <>
-      <Button
-        endContent={<IconMailCancel />}
-        variant="bordered"
-        onPress={onOpen}
-      ></Button>
+      <IconMailCancel
+        className="cursor-pointer hover:bg-gray-100"
+        onClick={onOpen}
+      />
 
       <Modal
         isDismissable={false}

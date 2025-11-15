@@ -15,6 +15,8 @@ import DefaultLayout from "@/layouts/default";
 import { useSocket } from "@/context/SocketContext";
 import { CryptoHistoryItem } from "@/types";
 import { subtitle } from "@/components/primitives";
+import { formatCryptoHistoryData } from "@/utils/formatPrice";
+import { useExchange } from "@/context/ExchangeContext";
 
 export default function CryptoPage() {
   const { socket, joinCryptoRoom, leaveCryptoRoom } = useSocket();
@@ -23,6 +25,11 @@ export default function CryptoPage() {
     null
   );
   const [chartData, setChartData] = useState<any[]>([]);
+
+  const { currentExchange } = useExchange();
+  const rate = currentExchange?.rate || 1;
+
+  console.log("exchange", currentExchange);
 
   // Unirse a la sala de esta crypto específica
   useEffect(() => {
@@ -59,7 +66,9 @@ export default function CryptoPage() {
       }))
       .reverse();
 
-    setChartData(cleanedData);
+    if (cleanedData.length === 0) return;
+
+    setChartData(formatCryptoHistoryData(cleanedData, rate));
   }, [cryptoData]);
 
   const graph = (

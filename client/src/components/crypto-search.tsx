@@ -13,7 +13,7 @@ export const CryptoSearch = () => {
     <Autocomplete
       aria-label="Search"
       endContent={
-        <Kbd className="hidden lg:inline-block" keys={["command"]}>
+        <Kbd className="hidden md:inline-block" keys={["command"]}>
           K
         </Kbd>
       }

@@ -26,3 +26,8 @@ export type CryptoHistoryItem = {
   timestamp: number; // Momento del snapshot (Unix timestamp)
   price: number;
 };
+
+export type ExchangeRate = {
+  currency: string;
+  rate: number;
+};
